@@ -164,7 +164,7 @@ export const space = {
   stepRowHeight: 60,
   counterRowHeight: 56,
   navTop: 721,
-  navHeight: 55,
+  navHeight: 56,
   navItemWidth: 75,
   navItemHeight: 56,
   navPadX: 4,
