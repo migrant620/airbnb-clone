@@ -122,6 +122,7 @@ export const SearchSheet = (p: Props) => {
       <TouchableOpacity style={styles.scrim} onPress={p.onClose} accessible={false} />
       <View style={styles.panel} aria-modal={true} role="dialog">
         <View style={styles.sheetSurface} pointerEvents="none" />
+        <View style={styles.sheetShadow} pointerEvents="none" />
         <View style={styles.header}>
           <TouchableOpacity accessibilityRole="button" onPress={p.onClose} style={styles.closeBtn}>
             <View accessibilityRole="button" accessibilityLabel="Close" style={styles.closeHit} />
@@ -260,8 +261,13 @@ const styles = StyleSheet.create({
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.sheetBackdrop,
   },
   sheetSurface: {
-    position: 'absolute', top: colors.sheetTopOffset, left: 0, right: 0, bottom: 0,
+    position: 'absolute', top: colors.sheetTopOffset, left: 0, right: 0, bottom: colors.sheetBottomInset,
     backgroundColor: colors.white, borderTopLeftRadius: radii.sheetTop, borderTopRightRadius: radii.sheetTop,
+  },
+  sheetShadow: {
+    position: 'absolute', bottom: colors.sheetBottomInset - colors.sheetShadowHeight,
+    left: 0, right: 0, height: colors.sheetShadowHeight,
+    backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,${colors.sheetShadowTopAlpha}) 0%, rgba(0,0,0,0) 100%)`,
   },
   header: { position: 'absolute', top: 0, left: 0, right: 0, height: 70, zIndex: 2 },
   closeBtn: { position: 'absolute', right: 16, top: 14.9, width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
