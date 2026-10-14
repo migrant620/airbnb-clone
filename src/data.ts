@@ -150,10 +150,10 @@ export const detailListing = {
 export const PHOTO_TOTAL = 95;
 
 export const destinations = [
-  { name: 'Nearby', sub: 'Find what’s around you', photo: img.h01 },
-  { name: 'Lake Tahoe', sub: 'Popular lake destination', photo: img.h02 },
-  { name: 'South Lake Tahoe, CA', sub: 'For nature-lovers', photo: img.h03 },
-  { name: 'Los Angeles, CA', sub: 'For sights like Universal\u00a0Studios\u00a0Hollywood', photo: img.h04 },
+  { name: 'Nearby', sub: 'Find what’s around you', tile: '#F0F6FB', glyph: 'nearby' as const, ink: '#4A81B0' },
+  { name: 'Lake Tahoe', sub: 'Popular lake destination', tile: '#F0F5F1', glyph: 'lake' as const, ink: '#0A6516' },
+  { name: 'South Lake Tahoe, CA', sub: 'For nature-lovers', tile: '#FDF7F0', glyph: 'mountain' as const, ink: '#E58D38' },
+  { name: 'Los Angeles, CA', sub: 'For sights like Universal\u00a0Studios\u00a0Hollywood', tile: '#FEF5F6', glyph: 'city' as const, ink: '#F2705C' },
 ];
 
 export const filterChips = ['Free parking', 'Self check-in', '1+ bathrooms', 'Allows pets'];
