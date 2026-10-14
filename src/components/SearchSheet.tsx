@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { colors, type, space, radii, shadow } from '../tokens';
 import { CloseIcon, SearchIcon, StarIcon } from './Icons';
 import { Calendar, DayRange } from './Calendar';
 import { CounterRow } from './GuestCounter';
+import { DestinationMark } from './DestinationMarks';
 import { destinations } from '../data';
 
 export type Guests = { adults: number; children: number; infants: number; pets: number };
@@ -120,6 +121,7 @@ export const SearchSheet = (p: Props) => {
     <View style={styles.overlay}>
       <TouchableOpacity style={styles.scrim} onPress={p.onClose} accessible={false} />
       <View style={styles.panel} aria-modal={true} role="dialog">
+        <View style={styles.sheetSurface} pointerEvents="none" />
         <View style={styles.header}>
           <TouchableOpacity accessibilityRole="button" onPress={p.onClose} style={styles.closeBtn}>
             <View accessibilityRole="button" accessibilityLabel="Close" style={styles.closeHit} />
@@ -163,7 +165,9 @@ export const SearchSheet = (p: Props) => {
                 <View style={styles.destList}>
                   {destinations.map((d) => (
                     <TouchableOpacity key={d.name} accessibilityRole="button" accessibilityLabel={d.name} onPress={() => { p.pickDestination(d.name); p.setStep('when'); }} style={styles.destRow}>
-                      <Image source={d.photo} style={styles.destThumb} />
+                      <View style={[styles.destThumb, { backgroundColor: d.tile }]} pointerEvents="none">
+                        <DestinationMark glyph={d.glyph} size={30} color={d.ink} />
+                      </View>
                       <View style={styles.destText}>
                         <Text style={styles.destName}>{d.name}</Text>
                         <Text style={styles.destSub} numberOfLines={2}>{d.sub}</Text>
@@ -251,14 +255,17 @@ export const SearchSheet = (p: Props) => {
 
 const styles = StyleSheet.create({
   overlay: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 50 },
-  scrim: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.scrim },
+  scrim: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.sheetBackdrop },
   panel: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+  },
+  sheetSurface: {
+    position: 'absolute', top: colors.sheetTopOffset, left: 0, right: 0, bottom: 0,
     backgroundColor: colors.white, borderTopLeftRadius: radii.sheetTop, borderTopRightRadius: radii.sheetTop,
   },
   header: { position: 'absolute', top: 0, left: 0, right: 0, height: 70, zIndex: 2 },
   closeBtn: { position: 'absolute', right: 16, top: 14.9, width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
-  closeDisc: { position: 'absolute', width: 31, height: 31, borderRadius: 15.5, backgroundColor: colors.white },
+  closeDisc: { position: 'absolute', width: 40, height: 40, borderRadius: 20, backgroundColor: colors.white },
   closeHit: { position: 'absolute', right: 16, top: 16.1, width: 16, height: 16 },
   seg: { position: 'absolute', top: 24, left: 95.7, width: 204.5, height: 45, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
   segBtn: { height: 45, alignItems: 'center' },
@@ -298,7 +305,7 @@ const styles = StyleSheet.create({
   },
   destList: { marginHorizontal: -8 },
   destRow: { height: 72, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 },
-  destThumb: { width: 56, height: 56, borderRadius: 10, marginRight: 16, backgroundColor: colors.mapBlock },
+  destThumb: { width: 56, height: 56, borderRadius: 10, marginRight: 16, alignItems: 'center', justifyContent: 'center' },
   destText: { width: 249 },
   destName: {
     fontFamily: 'PJS', fontSize: 14, lineHeight: 20.4, height: 20.4,
