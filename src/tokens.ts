@@ -24,7 +24,7 @@ export const colors = {
   navActive: '#DA1249',
   pillBorder: '#DDDDDD',
   scrim: 'rgba(0,0,0,0.35)',
-  sheetBackdrop: 'rgba(0,0,0,0.11)',
+  sheetBackdrop: '#E3E3E3',
   sheetTopOffset: 101.5,
   destTileNearby: '#F0F6FB',
   destTileLake: '#F0F5F1',
