@@ -10,7 +10,7 @@ export const listingLabel = (l: Listing) =>
     .join('. ')
     .replace(/,(\S)/g, ', $1');
 
-export const ListingCard = ({
+export const ListingCard = React.memo(({
   listing,
   onOpen,
   onHeart,
@@ -62,7 +62,7 @@ export const ListingCard = ({
       </View>
     </View>
   </TouchableOpacity>
-);
+));
 
 export const CategoryThumb = ({
   label,
