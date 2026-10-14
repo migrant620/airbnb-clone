@@ -256,7 +256,7 @@ function Shell() {
   );
 }
 
-export default function App() {
+export default React.memo(function App() {
   return (
     <SafeAreaProvider>
       <View style={styles.stage}>
@@ -264,7 +264,7 @@ export default function App() {
       </View>
     </SafeAreaProvider>
   );
-}
+});
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.white },
