@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     letterSpacing: -0.14, color: colors.secondary, marginTop: 4.1,
   },
   captionRow: { marginTop: -11.6, height: 48, lineHeight: 48 },
-  counter: { width: 116.2, height: 48, position: 'relative', marginRight: -9 },
+  counter: { width: 116.2, height: 48, position: 'relative', marginRight: -7.9 },
   cbtn: { position: 'absolute', top: 0, width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   decPos: { left: 0 },
   incPos: { left: 68.2 },
