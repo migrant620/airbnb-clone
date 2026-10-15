@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   centred: { textAlign: 'center' },
   titleInk: { color: colors.black },
   orInk: { color: colors.black },
-  field: { borderWidth: 1, borderColor: colors.hairline, borderRadius: 12, backgroundColor: colors.white },
+  field: { borderWidth: 1, borderColor: colors.fieldBorder, borderRadius: 12, backgroundColor: colors.white },
   continueBtn: { backgroundColor: colors.continuePink, borderRadius: 8 },
   rule: { backgroundColor: colors.hairlineSoft },
   social: {
