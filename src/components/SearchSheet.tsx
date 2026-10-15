@@ -311,7 +311,7 @@ const styles = StyleSheet.create({
   },
   destList: { marginHorizontal: -8 },
   destRow: { height: 72, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 },
-  destThumb: { width: 56, height: 56, borderRadius: 10, marginRight: 16, alignItems: 'center', justifyContent: 'center' },
+  destThumb: { width: 56, height: 56, borderRadius: 12, marginRight: 16, alignItems: 'center', justifyContent: 'center' },
   destText: { width: 249 },
   destName: {
     fontFamily: 'PJS', fontSize: 14, lineHeight: 20.4, height: 20.4,
