@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
   body: { position: 'absolute', top: 70, left: 0, right: 0, bottom: 49 },
   bodyInner: { paddingTop: 31.2, paddingHorizontal: 16, paddingBottom: 16 },
   stepCard: {
-    borderWidth: 1, borderColor: colors.hairline, borderRadius: radii.stepRadius, overflow: 'hidden',
+    borderWidth: 1, borderColor: colors.fieldBorder, borderRadius: radii.stepRadius, overflow: 'hidden',
     backgroundColor: colors.white, position: 'relative',
   },
   stepCardActive: { borderColor: colors.ink, marginHorizontal: -4 },

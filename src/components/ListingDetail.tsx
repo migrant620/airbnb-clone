@@ -354,7 +354,7 @@ const styles = StyleSheet.create({
   centred: { textAlign: 'center' },
   reviewCountText: { textAlign: 'center', letterSpacing: -1.6 },
   chipPill: { backgroundColor: '#F7F7F7', borderRadius: 6, alignItems: 'center', justifyContent: 'center' },
-  divider: { backgroundColor: colors.hairlineSoft },
+  divider: { backgroundColor: colors.hairline },
   avatarImg: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.mapBlock },
   superhostBadge: { backgroundColor: colors.brand, borderRadius: 4 },
   bandIconBox: { alignItems: 'center', justifyContent: 'center' },
@@ -376,7 +376,7 @@ const styles = StyleSheet.create({
   amenBtnText: { textAlign: 'center' },
   bottomBar: {
     position: 'absolute', left: 0, right: 0, bottom: 0, height: 777 - 696.8,
-    backgroundColor: colors.white, borderTopWidth: 1, borderTopColor: colors.hairlineSoft,
+    backgroundColor: colors.white, borderTopWidth: 1, borderTopColor: colors.hairline,
   },
   priceWas: { color: colors.secondary, textDecorationLine: 'line-through' },
   reserve: { backgroundColor: colors.reserve, borderRadius: 24.6, alignItems: 'center', justifyContent: 'center' },

@@ -9,6 +9,7 @@ export const colors = {
   tertiary: '#717171',
   hairline: '#DDDDDD',
   hairlineSoft: '#EBEBEB',
+  fieldBorder: '#8C8C8C',
   brand: '#FF385C',
   reserve: '#D70466',
   continuePink: '#F22A54',
