@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     fontFamily: 'PJS', fontSize: 14, lineHeight: 20.4, height: 20.4,
     fontWeight: '600' as const, letterSpacing: -0.33, color: INK,
   },
-  destSub: { fontFamily: 'PJS', fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.195, color: INK_SECONDARY },
+  destSub: { fontFamily: 'PJS', fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.195, color: '#7C7C7C' },
   calendarWrap: { marginTop: 26, height: 300, overflow: 'hidden' },
   dateSeg: {
     flexDirection: 'row', alignItems: 'center', backgroundColor: colors.chipBg,
