@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   ScrollView,
+  TextInput,
+  TextStyle,
 } from 'react-native';
 import { colors, type, space, radii, shadow } from '../tokens';
 import { CloseIcon, PlusIcon, MinusIcon } from './Icons';
@@ -59,42 +61,47 @@ const Stepper = ({
   );
 };
 
+export type FilterState = {
+  placeType: PlaceType;
+  amenities: number[];
+  rooms: { bedrooms: number; beds: number; baths: number };
+  minPrice: string;
+  maxPrice: string;
+};
+
+export const initialFilters: FilterState = {
+  placeType: 'Any',
+  amenities: [],
+  rooms: { bedrooms: 0, beds: 0, baths: 0 },
+  minPrice: '',
+  maxPrice: '',
+};
+
+export const appliedCount = (f: FilterState) =>
+  (f.placeType !== 'Any' ? 1 : 0) + f.amenities.length + (f.rooms.bedrooms > 0 ? 1 : 0) +
+  (f.rooms.beds > 0 ? 1 : 0) + (f.rooms.baths > 0 ? 1 : 0) + (f.minPrice !== '' || f.maxPrice !== '' ? 1 : 0);
+
+export const toggleAmenityIn = (f: FilterState, i: number): FilterState => ({
+  ...f,
+  amenities: f.amenities.includes(i) ? f.amenities.filter((a) => a !== i) : [...f.amenities, i].sort((a, b) => a - b),
+});
+
+const digits = (t: string) => t.replace(/[^0-9]/g, '').slice(0, 6);
+
 export const FiltersSheet = ({
   onClose,
-  onApply,
+  value,
+  onChange,
 }: {
   onClose: () => void;
-  onApply?: (count: number) => void;
+  value: FilterState;
+  onChange: (next: FilterState) => void;
 }) => {
-  const [placeType, setPlaceType] = React.useState<PlaceType>('Any');
-  const [amenities, setAmenities] = React.useState<Set<number>>(new Set());
-  const [rooms, setRooms] = React.useState<{ bedrooms: number; beds: number; baths: number }>({
-    bedrooms: 0,
-    beds: 0,
-    baths: 0,
-  });
-
-  const toggleAmenity = (i: number) => {
-    setAmenities((prev) => {
-      const next = new Set(prev);
-      if (next.has(i)) next.delete(i);
-      else next.add(i);
-      return next;
-    });
-  };
-
-  const applied = (placeType !== 'Any' ? 1 : 0) + amenities.size + (rooms.bedrooms > 0 ? 1 : 0) +
-    (rooms.beds > 0 ? 1 : 0) + (rooms.baths > 0 ? 1 : 0);
-
-  React.useEffect(() => {
-    onApply?.(applied);
-  }, [applied, onApply]);
-
-  const clearAll = () => {
-    setPlaceType('Any');
-    setAmenities(new Set());
-    setRooms({ bedrooms: 0, beds: 0, baths: 0 });
-  };
+  const { placeType, rooms } = value;
+  const setPlaceType = (t: PlaceType) => onChange({ ...value, placeType: t });
+  const setRooms = (fn: (r: FilterState['rooms']) => FilterState['rooms']) => onChange({ ...value, rooms: fn(rooms) });
+  const toggleAmenity = (i: number) => onChange(toggleAmenityIn(value, i));
+  const clearAll = () => onChange(initialFilters);
 
   return (
     <View style={styles.scrim}>
@@ -120,12 +127,26 @@ export const FiltersSheet = ({
         <ScrollView style={styles.body} showsVerticalScrollIndicator={false} bounces={false}>
           <Text style={[type.sheetSectionTitle, styles.sectionTitle]}>Price range</Text>
           <View style={styles.priceRow}>
-            <View style={styles.priceInput} pointerEvents="none">
-              <Text style={type.inputPlaceholder} numberOfLines={1}>Min</Text>
+            <View style={styles.priceInput}>
+              <Text style={type.inputPlaceholder} numberOfLines={1}>{value.minPrice === '' ? 'Min' : '$'}</Text>
+              <TextInput
+                accessibilityLabel="Minimum price"
+                value={value.minPrice}
+                onChangeText={(t) => onChange({ ...value, minPrice: digits(t) })}
+                keyboardType="number-pad"
+                style={priceField}
+              />
             </View>
             <Text style={styles.priceDash} numberOfLines={1}>–</Text>
-            <View style={styles.priceInput} pointerEvents="none">
-              <Text style={type.inputPlaceholder} numberOfLines={1}>Max</Text>
+            <View style={styles.priceInput}>
+              <Text style={type.inputPlaceholder} numberOfLines={1}>{value.maxPrice === '' ? 'Max' : '$'}</Text>
+              <TextInput
+                accessibilityLabel="Maximum price"
+                value={value.maxPrice}
+                onChangeText={(t) => onChange({ ...value, maxPrice: digits(t) })}
+                keyboardType="number-pad"
+                style={priceField}
+              />
             </View>
           </View>
 
@@ -171,7 +192,7 @@ export const FiltersSheet = ({
           <Text style={[type.sheetSectionTitle, styles.sectionTitle]}>Amenities</Text>
           <View style={styles.chipWrap}>
             {filterChips.map((label, i) => {
-              const sel = amenities.has(i);
+              const sel = value.amenities.includes(i);
               return (
                 <TouchableOpacity
                   key={label}
@@ -291,3 +312,9 @@ const styles = StyleSheet.create({
   },
   showText: { color: colors.white },
 });
+
+const priceField = {
+  position: 'absolute', left: 28, right: 12, top: 0, bottom: 0,
+  fontFamily: type.inputValue.fontFamily, fontSize: type.inputValue.fontSize, color: colors.ink,
+  backgroundColor: 'transparent', borderWidth: 0, outlineStyle: 'none',
+} as unknown as TextStyle;

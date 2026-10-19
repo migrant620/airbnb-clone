@@ -83,8 +83,8 @@ export type MapPin = {
 };
 
 export const mapPins: MapPin[] = [
-  { x: 202.3, y: 238.7, w: 54.9, h: 33.8, label: 'Tent in Montara, $292 for 1 night, originally $323', price: '$292', compact: false },
-  { x: 201.6, y: 238.0, w: 56.0, h: 33.8, label: 'Tent in Montara, $304 for 1 night, originally $336', price: '$304', compact: false },
+  { x: 202.3, y: 238.7, w: 54.9, h: 33.8, label: 'Tent in Woodside, $292 for 1 night, originally $323', price: '$292', compact: false },
+  { x: 201.6, y: 238.0, w: 56.0, h: 33.8, label: 'Tent in Woodside, $304 for 1 night, originally $336', price: '$304', compact: false },
   { x: 176.8, y: 234.4, w: 55.3, h: 33.8, label: 'Home in Half Moon Bay, $246 for 1 night', price: '$246', compact: false },
   { x: 168.5, y: 223.8, w: 53.1, h: 33.8, label: 'Home in Half Moon Bay, $341 for 1 night', price: '$341', compact: false },
   { x: 166.3, y: 220.5, w: 54.6, h: 33.8, label: 'Guest suite in Half Moon Bay, $247 for 1 night, originally $275', price: '$247', compact: false },

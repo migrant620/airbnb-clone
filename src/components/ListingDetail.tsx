@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, useWindowDimensions } from 'react-native';
 import { colors, type } from '../tokens';
 import { BackIcon, ShareIcon, HeartIcon, StarIcon, TrophyIcon, PinIcon, CheckCircleIcon, PhotoIcon, AmenityMark } from './Icons';
 import { detailListing, PHOTO_TOTAL, amenityPreview, amenityTotal } from '../data';
@@ -19,10 +19,13 @@ const PAD = 49.5;
 const SCROLL_H = 851.5;
 const AMEN = { divider: 1388, top: 1414, btnH: 48 };
 const TAIL = 120;
+const FREE_CANCEL_DROP = 0.6;
 const CONTENT_H = 1718 + TAIL;
 
 const at = (x: number, y: number, w: number, h: number) =>
   ({ position: 'absolute', left: x, top: y, width: w, height: h } as const);
+const atMin = (x: number, y: number, w: number, h: number) =>
+  ({ position: 'absolute', left: x, top: y, minWidth: w, height: h } as const);
 
 const R = {
   hero: { x: 0, y: 0, w: W, h: 374.4 },
@@ -51,6 +54,7 @@ const R = {
   bandIcon: { x: 20, y: 0, w: 48, h: 48 },
   bandTitle: { x: 80.1, h: 18.2 },
   bandTitleW: [115.4, 202.3, 192.9, 235.1],
+  bandTitleTrack: [-0.46, undefined, undefined, undefined] as (number | undefined)[],
   bandDesc: { x: 80.1, w: 288.9, h: 36.4 },
   bandTops: [747.4, 826, 904.6, 983.2],
   dividerC: { x: 24, y: 1065.8, w: 345, h: 1.1 },
@@ -88,6 +92,9 @@ export const ListingDetail = ({
   onOpenReviews,
   onOpenAmenities,
   onReserve,
+  onShowMore,
+  onOpenHost,
+  onOpenPrice,
 }: {
   photoIndex: number;
   onBack: () => void;
@@ -99,8 +106,13 @@ export const ListingDetail = ({
   onOpenReviews: () => void;
   onOpenAmenities: () => void;
   onReserve: () => void;
+  onShowMore: () => void;
+  onOpenHost: () => void;
+  onOpenPrice: () => void;
 }) => {
   const { photos, host, blocks } = detailListing;
+  const { height: winH } = useWindowDimensions();
+  const scrollH = SCROLL_H - (777 - Math.min(777, winH));
   const touchStart = React.useRef<{ x: number; y: number } | null>(null);
   const pressStart = (x: number, y: number) => { touchStart.current = { x, y }; };
   const pressEnd = (x: number, y: number) => {
@@ -119,7 +131,7 @@ export const ListingDetail = ({
       />
 
       <ScrollView
-        style={styles.scroll}
+        style={[styles.scroll, { height: scrollH }]}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         bounces={false}
@@ -203,25 +215,25 @@ export const ListingDetail = ({
         </TouchableOpacity>
 
         <View style={[at(R.chipPill.x, R.chipPill.y, R.chipPill.w, R.chipPill.h), styles.chipPill]} pointerEvents="none" />
-        <Text style={[type.pdpChip, at(R.freeCancel.x, R.freeCancel.y, R.freeCancel.w, R.freeCancel.h), styles.centred, styles.noHit]} numberOfLines={1}>
+        <Text style={[type.pdpChip, atMin(R.freeCancel.x, R.freeCancel.y + FREE_CANCEL_DROP, R.freeCancel.w, R.freeCancel.h), styles.centred, styles.noHit]} numberOfLines={1}>
           Free cancellation
         </Text>
 
         <View style={[span(R.dividerA.x, R.dividerA.y, R_INSET.dividerA, R.dividerA.h), styles.divider]} pointerEvents="none" />
 
-        <TouchableOpacity accessibilityRole="button" onPress={onReserve} activeOpacity={1} style={at(R.avatar.x, R.avatar.y, R.avatar.w, R.avatar.h)}>
+        <TouchableOpacity accessibilityRole="button" onPress={onOpenHost} activeOpacity={1} style={at(R.avatar.x, R.avatar.y, R.avatar.w, R.avatar.h)}>
           <Image source={photos[0].file} style={styles.avatarImg} resizeMode="cover" />
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={host.desc}
-            onPress={onReserve}
+            onPress={onOpenHost}
             activeOpacity={1}
             style={at(R.superhostHit.x - R.avatar.x, R.superhostHit.y - R.avatar.y, R.superhostHit.w, R.superhostHit.h)}
           />
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={host.superhost}
-            onPress={onReserve}
+            onPress={onOpenHost}
             activeOpacity={1}
             style={[at(R.superhostBadge.x - R.avatar.x, R.superhostBadge.y - R.avatar.y, R.superhostBadge.w, R.superhostBadge.h), styles.superhostBadge]}
           />
@@ -236,7 +248,7 @@ export const ListingDetail = ({
             <View style={[at(R.bandIcon.x, R.bandTops[i], R.bandIcon.w, R.bandIcon.h), styles.bandIconBox]} pointerEvents="none">
               <BandGlyph index={i} />
             </View>
-            <Text style={[type.pdpBlockTitle, at(R.bandTitle.x, R.bandTops[i], R.bandTitleW[i], R.bandTitle.h)]} numberOfLines={1}>
+            <Text style={[type.pdpBlockTitle, atMin(R.bandTitle.x, R.bandTops[i], R.bandTitleW[i], R.bandTitle.h), R.bandTitleTrack[i] === undefined ? null : { letterSpacing: R.bandTitleTrack[i] }]} numberOfLines={1}>
               {b.title}
             </Text>
             <Text style={[type.pdpBlockDesc, span(R.bandDesc.x, R.bandTops[i] + 22.2, R_INSET.bandDesc, R.bandDesc.h)]}>
@@ -251,7 +263,7 @@ export const ListingDetail = ({
 
         <TouchableOpacity
           accessibilityRole="button"
-          onPress={onReserve}
+          onPress={onShowMore}
           activeOpacity={0.9}
           style={span(R.showMore.x, R.showMore.y, R_INSET.showMore, R.showMore.h)}
         >
@@ -304,7 +316,7 @@ export const ListingDetail = ({
       <TouchableOpacity
         accessibilityRole="button"
         accessibilityLabel={detailListing.priceLabel}
-        onPress={onReserve}
+        onPress={onOpenPrice}
         activeOpacity={1}
         style={lowAt(R.price.x, R.price.y, R.price.w, R.price.h)}
       >

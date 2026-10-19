@@ -22,16 +22,21 @@ export const MapCanvas = ({ width, height, stretch }: { width: number; height: n
   </Svg>
 );
 
-export const MapPinMarker = ({ pin, onPress }: { pin: MapPin; onPress: () => void }) => (
+export const MapPinMarker = ({ pin, onPress, selected = false }: { pin: MapPin; onPress: () => void; selected?: boolean }) => (
   <TouchableOpacity
     accessibilityRole="button"
     accessibilityLabel={pin.label}
+    accessibilityState={{ selected }}
     onPress={onPress}
     activeOpacity={0.9}
-    style={[styles.pin, { left: pin.x, top: pin.y, width: pin.w, height: pin.h, borderRadius: pin.h / 2 }]}
+    style={[
+      styles.pin,
+      { left: pin.x, top: pin.y, width: pin.w, height: pin.h, borderRadius: pin.h / 2 },
+      selected ? styles.pinSelected : null,
+    ]}
   >
     {pin.compact ? null : (
-      <Text style={type.mapPin} numberOfLines={1}>
+      <Text style={[type.mapPin, selected ? styles.pinTextSelected : null]} numberOfLines={1}>
         {pin.price}
       </Text>
     )}
@@ -51,4 +56,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     elevation: 3,
   },
+  pinSelected: { backgroundColor: colors.pinBg, zIndex: 5 },
+  pinTextSelected: { color: colors.pinText },
 });

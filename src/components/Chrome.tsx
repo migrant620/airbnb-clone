@@ -55,7 +55,7 @@ export const CategoryTabs = ({
                 {icon}
               </Text>
             </View>
-            <Text style={[type.tab, track === undefined ? null : { letterSpacing: track }]}>{t}</Text>
+            <Text style={[type.tab, sel ? styles.tabLabelSelected : styles.tabLabel, track === undefined ? null : { letterSpacing: track }]}>{t}</Text>
           </TouchableOpacity>
         );
       })}
@@ -146,6 +146,8 @@ const styles = StyleSheet.create({
   tabIconBox: { width: space.tabIconBox, height: space.tabIconBox, marginRight: space.tabIconGap, alignItems: 'center', justifyContent: 'center' },
   tabEmoji: { fontSize: 15, lineHeight: 16, textAlign: 'center' },
   tabBtnSelected: { backgroundColor: colors.chipSelected, borderRadius: space.tabsHeight / 2 },
+  tabLabel: { position: 'relative', top: 0.7 },
+  tabLabelSelected: { position: 'relative', top: 1.8 },
   tabThumb: { width: space.tabIconBox, height: space.tabIconBox, borderRadius: 8 },
   tabThumbFallback: {
     width: space.tabIconBox, height: space.tabIconBox, borderRadius: 8,

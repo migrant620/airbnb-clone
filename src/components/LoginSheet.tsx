@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, TouchableWithoutFeedback, TextInput, TextStyle } from 'react-native';
 import { colors, type } from '../tokens';
 import { CloseIcon, GoogleIcon, AppleIcon, BeloIcon } from './Icons';
 import { insetOf, rightAt, span } from '../layout';
@@ -27,7 +27,9 @@ const L = {
 const COL = insetOf(L.title.x, L.title.w);
 const OR_RIGHT = insetOf(L.orLineR.x, L.orLineR.w);
 
-export const LoginSheet = ({ onClose }: { onClose: () => void }) => (
+export const LoginSheet = ({ onClose }: { onClose: () => void }) => {
+  const [contact, setContact] = React.useState('');
+  return (
   <TouchableWithoutFeedback onPress={onClose}>
     <View style={styles.inner} aria-modal={true} role="dialog">
       <TouchableOpacity
@@ -53,9 +55,26 @@ export const LoginSheet = ({ onClose }: { onClose: () => void }) => (
     <Text style={[type.loginTitle, span(L.title.x, L.title.y, COL, L.title.h), styles.centred, styles.titleInk]}>{'Log in or sign up'}</Text>
 
     <View style={[span(L.field.x, L.field.y, COL, L.field.h), styles.field]} pointerEvents="none" />
-    <Text style={[type.loginInput, at(L.placeholder.x, L.placeholder.y, L.placeholder.w, L.placeholder.h)]} numberOfLines={1}>
-      Phone number or email
-    </Text>
+    {contact === '' ? (
+      <Text style={[type.loginInput, at(L.placeholder.x, L.placeholder.y, L.placeholder.w, L.placeholder.h)]} numberOfLines={1}>
+        Phone number or email
+      </Text>
+    ) : null}
+    <View
+      style={span(L.field.x, L.field.y, COL, L.field.h)}
+      onStartShouldSetResponder={() => true}
+      {...({ onClick: (e: { stopPropagation: () => void }) => e.stopPropagation() } as object)}
+    >
+      <TextInput
+        accessibilityLabel="Phone number or email"
+        value={contact}
+        onChangeText={setContact}
+        autoComplete="email"
+        autoCapitalize="none"
+        keyboardType="email-address"
+        style={[styles.fill, inputStyle]}
+      />
+    </View>
 
     <TouchableOpacity
       accessibilityRole="button"
@@ -95,7 +114,8 @@ export const LoginSheet = ({ onClose }: { onClose: () => void }) => (
     </TouchableOpacity>
     </View>
   </TouchableWithoutFeedback>
-);
+  );
+};
 
 const styles = StyleSheet.create({
   inner: {
@@ -103,13 +123,25 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white, zIndex: 55,
   },
   centred: { textAlign: 'center' },
+  fill: { width: '100%', height: '100%' },
   titleInk: { color: colors.black },
   orInk: { color: colors.black },
   field: { borderWidth: 1, borderColor: colors.fieldBorder, borderRadius: 12, backgroundColor: colors.white },
   continueBtn: { backgroundColor: colors.continuePink, borderRadius: 8 },
+
   rule: { backgroundColor: colors.hairlineSoft },
   social: {
     borderWidth: 1.1, borderColor: colors.hairline, borderRadius: 13.5, backgroundColor: colors.white,
     alignItems: 'center', justifyContent: 'center',
   },
 });
+
+const inputStyle = {
+  paddingHorizontal: L.placeholder.x - L.field.x,
+  backgroundColor: 'transparent',
+  borderWidth: 0,
+  fontFamily: type.loginInput.fontFamily,
+  fontSize: type.loginInput.fontSize,
+  color: colors.ink,
+  outlineStyle: 'none',
+} as unknown as TextStyle;
