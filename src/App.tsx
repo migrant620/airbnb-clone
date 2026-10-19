@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, Share } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { useFonts } from 'expo-font';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -9,7 +9,9 @@ import { ResultsScreen } from './components/ResultsScreen';
 import { ListingDetail } from './components/ListingDetail';
 import { PhotoViewer } from './components/PhotoViewer';
 import { LoginSheet } from './components/LoginSheet';
-import { FiltersSheet } from './components/FiltersSheet';
+import { FiltersSheet, FilterState, initialFilters, appliedCount, toggleAmenityIn } from './components/FiltersSheet';
+import { AboutSpaceScreen, PriceDetailsScreen, HostScreen } from './components/DetailPanels';
+import { PhotoFullscreen } from './components/PhotoFullscreen';
 import { ReviewsScreen } from './components/ReviewsScreen';
 import { AmenitiesScreen } from './components/AmenitiesScreen';
 import { EmptyState } from './components/EmptyState';
@@ -84,7 +86,12 @@ function Shell() {
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
   const [amenitiesOpen, setAmenitiesOpen] = React.useState(false);
   const [filtersOpen, setFiltersOpen] = React.useState(false);
-  const [filterCount, setFilterCount] = React.useState(0);
+  const [filters, setFilters] = React.useState<FilterState>(initialFilters);
+  const filterCount = appliedCount(filters);
+  const [fullPhoto, setFullPhoto] = React.useState<number | null>(null);
+  const [aboutOpen, setAboutOpen] = React.useState(false);
+  const [priceOpen, setPriceOpen] = React.useState(false);
+  const [hostOpen, setHostOpen] = React.useState(false);
   const [favorites, setFavorites] = React.useState<Listing[]>([]);
   const toggleFavorite = React.useCallback((l: Listing) => {
     setFavorites((prev) =>
@@ -148,6 +155,12 @@ function Shell() {
     setActiveNav(k);
     setScreen('explore');
   };
+  const shareListing = () => {
+    Share.share({
+      title: detailListing.title,
+      message: `${detailListing.title} · ${detailListing.location}`,
+    }).catch(() => undefined);
+  };
 
   return (
     <View style={[styles.root, { paddingTop: insets.top }]}>
@@ -191,6 +204,8 @@ function Shell() {
           onBack={() => { setScreen('explore'); setActiveNav('explore'); }}
           onFilters={() => setFiltersOpen(true)}
           filterCount={filterCount}
+          selectedChips={filters.amenities}
+          onToggleChip={(i) => setFilters((f) => toggleAmenityIn(f, i))}
           onOpenListing={() => openListing('results')}
           onHeart={() => setLoginOpen(true)}
           favoriteIds={favorites.map((f) => f.id)}
@@ -204,7 +219,7 @@ function Shell() {
         <ListingDetail
           photoIndex={photoIndex}
           onBack={() => setScreen(detailReturn)}
-          onShare={() => {}}
+          onShare={shareListing}
           onHeart={() => setLoginOpen(true)}
           isFavorite={favorites.some((f) => f.id === detailListingCard.id)}
           onOpenPhoto={() => { setPhotoOpen(true); }}
@@ -212,6 +227,9 @@ function Shell() {
           onOpenReviews={() => setReviewsOpen(true)}
           onOpenAmenities={() => setAmenitiesOpen(true)}
           onReserve={() => setLoginOpen(true)}
+          onShowMore={() => setAboutOpen(true)}
+          onOpenHost={() => setHostOpen(true)}
+          onOpenPrice={() => setPriceOpen(true)}
         />
       ) : null}
 
@@ -238,8 +256,27 @@ function Shell() {
         <PhotoViewer
           startIndex={photoIndex}
           onClose={() => setPhotoOpen(false)}
-          onShare={() => {}}
+          onShare={shareListing}
           onHeart={() => setLoginOpen(true)}
+          onOpenPhoto={setFullPhoto}
+        />
+      ) : null}
+
+      {fullPhoto !== null ? <PhotoFullscreen startIndex={fullPhoto} onClose={() => setFullPhoto(null)} /> : null}
+
+      {aboutOpen ? <AboutSpaceScreen onClose={() => setAboutOpen(false)} /> : null}
+
+      {priceOpen ? (
+        <PriceDetailsScreen
+          onClose={() => setPriceOpen(false)}
+          onReserve={() => { setPriceOpen(false); setLoginOpen(true); }}
+        />
+      ) : null}
+
+      {hostOpen ? (
+        <HostScreen
+          onClose={() => setHostOpen(false)}
+          onMessage={() => { setHostOpen(false); setLoginOpen(true); }}
         />
       ) : null}
 
@@ -250,7 +287,7 @@ function Shell() {
       {amenitiesOpen ? <AmenitiesScreen onClose={() => setAmenitiesOpen(false)} /> : null}
 
       {filtersOpen ? (
-        <FiltersSheet onClose={() => setFiltersOpen(false)} onApply={setFilterCount} />
+        <FiltersSheet onClose={() => setFiltersOpen(false)} value={filters} onChange={setFilters} />
       ) : null}
     </View>
   );

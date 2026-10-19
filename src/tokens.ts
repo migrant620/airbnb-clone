@@ -64,7 +64,7 @@ export const fonts = {
 } as const;
 
 export const type = {
-  searchPill: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 20, fontWeight: '500' as const, letterSpacing: -0.68, color: colors.ink },
+  searchPill: { fontFamily: fonts.sans, fontSize: 15.2, lineHeight: 20, fontWeight: '500' as const, letterSpacing: -0.68, color: colors.ink },
   tab: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 20, fontWeight: '400' as const, letterSpacing: -0.875, color: colors.ink },
   tabSelected: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 20, fontWeight: '400' as const, letterSpacing: -0.875, color: colors.ink },
   sectionTitle: { fontFamily: fonts.sans, fontSize: 18.5, lineHeight: 23.7, fontWeight: '700' as const, letterSpacing: -0.61, color: colors.ink },
@@ -120,7 +120,7 @@ export const type = {
   pdpMeta: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: 0.0, color: colors.secondary, textAlign: 'center' as const },
   pdpRating: { fontFamily: fonts.roboto700, fontSize: 18.2, lineHeight: 23.7, fontWeight: '500' as const, letterSpacing: -0.65, color: colors.ink },
   pdpGuestFav: { fontFamily: fonts.sans, fontSize: 14.25, lineHeight: 18.4, fontWeight: '700' as const, letterSpacing: -0.62, color: colors.ink },
-  pdpChip: { fontFamily: fonts.sans, fontSize: 11.7, lineHeight: 14.2, fontWeight: '500' as const, letterSpacing: -0.46, color: colors.tertiary },
+  pdpChip: { fontFamily: fonts.sans, fontSize: 11.7, lineHeight: 14.2, fontWeight: '500' as const, letterSpacing: -0.50, color: colors.tertiary },
   pdpHostName: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 20.7, fontWeight: '600' as const, letterSpacing: -0.26, color: colors.ink },
   pdpHostSub: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.22, color: colors.secondary },
   pdpBlockTitle: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, fontWeight: '600' as const, letterSpacing: -0.19, color: colors.ink },

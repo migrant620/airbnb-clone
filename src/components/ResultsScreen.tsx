@@ -29,7 +29,7 @@ const R = {
   guests: { x: 204.5, y: 41.8, w: 54.6, h: 15.6 },
   chipTop: 76.1,
   chipHeight: 48,
-  chipTextTop: 16,
+  chipTextTop: 15,
   chips: [
     { x: 32.0, w: 93.2, tx: 44.0, tw: 69.1 },
     { x: 133.2, w: 94.6, tx: 145.2, tw: 70.6 },
@@ -60,7 +60,7 @@ const MapGlyph = ({ size = 22, color = '#222' }: { size?: number; color?: string
 
 export const ResultsScreen = ({
   datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart,
-  favoriteIds, onToggleFavorite, activeNav, onNav,
+  favoriteIds, onToggleFavorite, activeNav, onNav, selectedChips, onToggleChip,
 }: {
   datesText: string;
   guestsText: string;
@@ -73,15 +73,13 @@ export const ResultsScreen = ({
   onToggleFavorite: (l: Listing) => void;
   activeNav: string;
   onNav: (k: string) => void;
+  selectedChips: number[];
+  onToggleChip: (i: number) => void;
 }) => {
   const [view, setView] = React.useState<'map' | 'list'>('map');
 
   const { height } = useWindowDimensions();
   const contentH = Math.max(777, height);
-
-  const toggleGlyph = view === 'map'
-    ? <ListGlyph size={22} color={colors.ink} />
-    : <MapGlyph size={22} color={colors.ink} />;
 
   return (
   <View style={styles.root}>
@@ -103,6 +101,8 @@ export const ResultsScreen = ({
         onHeart={onHeart}
         view={view}
         onToggle={() => setView('list')}
+        selectedChips={selectedChips}
+        onToggleChip={onToggleChip}
       />
     ) : (
       <ResultsList
@@ -116,6 +116,8 @@ export const ResultsScreen = ({
         onToggleFavorite={onToggleFavorite}
         view={view}
         onToggle={() => setView('map')}
+        selectedChips={selectedChips}
+        onToggleChip={onToggleChip}
       />
     )}
     </View>
@@ -172,6 +174,7 @@ const TopControls = ({
 
 const ResultsMap = ({
   datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart, view, onToggle,
+  selectedChips, onToggleChip,
 }: {
   datesText: string;
   guestsText: string;
@@ -182,18 +185,27 @@ const ResultsMap = ({
   onHeart: () => void;
   view: 'map' | 'list';
   onToggle: () => void;
-}) => (
+  selectedChips: number[];
+  onToggleChip: (i: number) => void;
+}) => {
+  const [selectedPin, setSelectedPin] = React.useState<string | null>(null);
+  return (
   <>
     <TouchableOpacity
       accessibilityRole="button"
       accessibilityLabel={'Google map\nShowing 20 stays.'}
-      onPress={() => {}}
+      onPress={() => setSelectedPin(null)}
       activeOpacity={1}
       style={styles.map}
     >
       <MapCanvas width={393} height={R.mapHeight} stretch />
       {visiblePins.map((p, i) => (
-        <MapPinMarker key={`${p.label}-${i}`} pin={p} onPress={() => {}} />
+        <MapPinMarker
+          key={`${p.label}-${i}`}
+          pin={p}
+          selected={selectedPin === p.label}
+          onPress={() => setSelectedPin(p.label)}
+        />
       ))}
 
       <View style={styles.sheet}>
@@ -248,14 +260,16 @@ const ResultsMap = ({
     <View style={styles.chips}>
       {filterChips.map((c, i) => {
         const g = R.chips[i];
+        const on = selectedChips.includes(i);
         return (
           <TouchableOpacity
             key={c}
             accessibilityRole="button"
             accessibilityLabel={c}
-            onPress={() => {}}
+            accessibilityState={{ selected: on }}
+            onPress={() => onToggleChip(i)}
             activeOpacity={0.7}
-            style={[styles.chip, { left: g.x, width: g.w }]}
+            style={[styles.chip, on ? styles.chipOn : null, { left: g.x, width: g.w }]}
           >
             <Text style={[type.resultsChip, chipText(g)]} numberOfLines={1}>{c}</Text>
           </TouchableOpacity>
@@ -263,11 +277,12 @@ const ResultsMap = ({
       })}
     </View>
   </>
-);
+  );
+};
 
 const ResultsList = ({
   datesText, guestsText, onBack, onFilters, filterCount, onOpenListing,
-  favoriteIds, onToggleFavorite, view, onToggle,
+  favoriteIds, onToggleFavorite, view, onToggle, selectedChips, onToggleChip,
 }: {
   datesText: string;
   guestsText: string;
@@ -279,6 +294,8 @@ const ResultsList = ({
   onToggleFavorite: (l: Listing) => void;
   view: 'map' | 'list';
   onToggle: () => void;
+  selectedChips: number[];
+  onToggleChip: (i: number) => void;
 }) => (
   <>
     <TopControls onBack={onBack} onFilters={onFilters} filterCount={filterCount} view={view} onToggle={onToggle} />
@@ -288,14 +305,15 @@ const ResultsList = ({
       <Text style={[type.resultsTitle, styles.listTitle]} numberOfLines={1}>Homes nearby</Text>
       <Text style={[type.resultsSub, styles.listSub]} numberOfLines={1}>{`${datesText}  ·  ${guestsText}`}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsRow} contentContainerStyle={styles.chipsRowInner}>
-        {filterChips.map((c) => (
+        {filterChips.map((c, i) => (
           <TouchableOpacity
             key={c}
             accessibilityRole="button"
             accessibilityLabel={c}
-            onPress={() => {}}
+            accessibilityState={{ selected: selectedChips.includes(i) }}
+            onPress={() => onToggleChip(i)}
             activeOpacity={0.7}
-            style={styles.listChip}
+            style={[styles.listChip, selectedChips.includes(i) ? styles.chipOn : null]}
           >
             <Text style={type.resultsChip} numberOfLines={1}>{c}</Text>
           </TouchableOpacity>
@@ -421,6 +439,7 @@ const styles = StyleSheet.create({
     position: 'absolute', top: 0, height: R.chipHeight, borderRadius: R.chipHeight / 2,
     borderWidth: 1, borderColor: colors.chipBorder, backgroundColor: colors.white,
   },
+  chipOn: { backgroundColor: colors.chipSelected, borderColor: colors.ink },
   listHeader: { paddingTop: 64, paddingHorizontal: 24 },
   listTitle: { marginTop: 2 },
   listSub: { marginTop: 2 },

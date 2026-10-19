@@ -10,8 +10,8 @@ type TabKey = 'wishlists' | 'trips' | 'messages' | 'login';
 
 const CONTENT: Record<TabKey, { title: string; body: string }> = {
   wishlists: {
-    title: 'No trips booked… yet!',
-    body: 'Time to dust off your bags and start planning your next adventure.',
+    title: 'Create your first wishlist',
+    body: 'As you search, tap the heart on a stay you like to save it here.',
   },
   trips: {
     title: 'No trips booked… yet!',

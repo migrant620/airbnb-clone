@@ -76,11 +76,13 @@ export const PhotoViewer = ({
   onClose,
   onShare,
   onHeart,
+  onOpenPhoto,
 }: {
   startIndex: number;
   onClose: () => void;
   onShare: () => void;
   onHeart: () => void;
+  onOpenPhoto: (i: number) => void;
 }) => {
   const rooms = detailListing.photos;
   const [index, setIndex] = React.useState(startIndex % rooms.length);
@@ -133,13 +135,13 @@ export const PhotoViewer = ({
         {room.caption}
       </Text>
 
-      <TouchableOpacity accessibilityRole="button" onPress={() => {}} activeOpacity={0.95} style={span(T.hero.x, T.hero.y, RIGHT_SPAN.hero, T.hero.h)}>
+      <TouchableOpacity accessibilityRole="button" onPress={() => onOpenPhoto(index)} activeOpacity={0.95} style={span(T.hero.x, T.hero.y, RIGHT_SPAN.hero, T.hero.h)}>
         <Image source={room.file} style={styles.photo} resizeMode="cover" />
       </TouchableOpacity>
-      <TouchableOpacity accessibilityRole="button" onPress={() => {}} activeOpacity={0.95} style={at(T.small1.x, T.small1.y, T.small1.w, T.small1.h)}>
+      <TouchableOpacity accessibilityRole="button" onPress={() => onOpenPhoto((index + 1) % rooms.length)} activeOpacity={0.95} style={at(T.small1.x, T.small1.y, T.small1.w, T.small1.h)}>
         <Image source={rooms[(index + 1) % rooms.length].file} style={styles.photo} resizeMode="cover" />
       </TouchableOpacity>
-      <TouchableOpacity accessibilityRole="button" onPress={() => {}} activeOpacity={0.95} style={span(T.small2.x, T.small2.y, RIGHT_SPAN.small2, T.small2.h)}>
+      <TouchableOpacity accessibilityRole="button" onPress={() => onOpenPhoto((index + 2) % rooms.length)} activeOpacity={0.95} style={span(T.small2.x, T.small2.y, RIGHT_SPAN.small2, T.small2.h)}>
         <Image source={rooms[(index + 2) % rooms.length].file} style={styles.photo} resizeMode="cover" />
       </TouchableOpacity>
 
