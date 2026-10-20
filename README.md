@@ -1,11 +1,11 @@
 <p align="center">
-  <a href="https://airbnb-ui.edgeone.cool"><img src="docs/demo.gif" width="280" alt="Searching Lake Tahoe, opening a listing and swiping through its photos, then tapping the heart to open the sign-in sheet"></a>
+  <a href="https://migrant620.github.io/airbnb/"><img src="docs/demo.gif" width="280" alt="Searching Lake Tahoe, opening a listing and swiping through its photos, then tapping the heart to open the sign-in sheet"></a>
 </p>
 
 <h1 align="center">Airbnb UI</h1>
 
 <p align="center">
-  <a href="https://airbnb-ui.edgeone.cool"><img src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-airbnb--ui.edgeone.cool-FF385C?style=for-the-badge" alt="Live demo"></a>
+  <a href="https://migrant620.github.io/airbnb/"><img src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-migrant620.github.io%2Fairbnb-FF385C?style=for-the-badge" alt="Live demo"></a>
 </p>
 
 <p align="center">
@@ -85,7 +85,7 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Demo build
 
-The published demo at <https://airbnb-ui.edgeone.cool> is built from this repository. It was last rebuilt and redeployed on 2026-10-19 (EdgeOne deployment `dpo35w3c9jju`, source revision `ea529ab4`).
+The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-10-20 (GitHub Pages commit `0dd8495e`, source revision `9cfc69f9`).
 
 ## Scope and limitations
 
