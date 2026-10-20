@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Airbnb UI Prototype",
-    "slug": "airbnb-ui",
-    "scheme": "airbnb-ui",
+    "slug": "airbnb-clone",
+    "scheme": "airbnb-clone",
     "version": "0.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",

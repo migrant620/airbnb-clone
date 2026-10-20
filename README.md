@@ -2,14 +2,14 @@
   <a href="https://migrant620.github.io/airbnb/"><img src="docs/demo.gif" width="280" alt="Searching Lake Tahoe, opening a listing and swiping through its photos, then tapping the heart to open the sign-in sheet"></a>
 </p>
 
-<h1 align="center">Airbnb UI</h1>
+<h1 align="center">Airbnb Clone</h1>
 
 <p align="center">
   <a href="https://migrant620.github.io/airbnb/"><img src="https://img.shields.io/badge/%E2%96%B6%20Live%20demo-migrant620.github.io%2Fairbnb-FF385C?style=for-the-badge" alt="Live demo"></a>
 </p>
 
 <p align="center">
-  A high-fidelity, interactive recreation of Airbnb's mobile interface — real components, real state, running in your browser.<br>
+  An Airbnb clone in React Native + Expo: a high-fidelity, interactive recreation of Airbnb's mobile interface — real components, real state, running in your browser.<br>
   <a href="DESIGN.md">DESIGN.md</a> · <a href="#design-notes">Design notes</a> · <a href="#explore-the-prototype">Explore</a> · <a href="#run-locally">Run locally</a> · <a href="#scope-and-limitations">Scope</a> · <a href="https://github.com/migrant620/awesome-app-design-md">More apps →</a>
 </p>
 
@@ -85,7 +85,7 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Demo build
 
-The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-10-20 (GitHub Pages commit `0dd8495e`, source revision `9cfc69f9`).
+The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-10-20 (GitHub Pages commit `0dd8495e`, source revision `8c914c90`).
 
 ## Scope and limitations
 
@@ -100,7 +100,7 @@ The published demo at <https://migrant620.github.io/airbnb/> is built from this 
 
 ## Commission a prototype
 
-Have an app whose screens you want to put in front of your team, a client or investors? I recreate chosen app interfaces and flows as high-fidelity, interactive prototypes and hand over the source code. [Open an issue](https://github.com/migrant620/airbnb-ui/issues/new?title=Prototype%20enquiry) with the app, the flow you need and your timeline.
+Have an app whose screens you want to put in front of your team, a client or investors? I recreate chosen app interfaces and flows as high-fidelity, interactive prototypes and hand over the source code. [Open an issue](https://github.com/migrant620/airbnb-clone/issues/new?title=Prototype%20enquiry) with the app, the flow you need and your timeline.
 
 ## License
 
