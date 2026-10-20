@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Rect, Path, Polygon } from 'react-native-svg';
 import { colors, type } from '../tokens';
 import type { MapPin } from '../data';
@@ -32,10 +32,13 @@ export const MapPinMarker = ({ pin, onPress, selected = false }: { pin: MapPin; 
     style={[
       styles.pin,
       { left: pin.x, top: pin.y, width: pin.w, height: pin.h, borderRadius: pin.h / 2 },
-      selected ? styles.pinSelected : null,
+      pin.compact ? styles.pinCompact : null,
+      selected ? (pin.compact ? styles.pinRaised : styles.pinSelected) : null,
     ]}
   >
-    {pin.compact ? null : (
+    {pin.compact ? (
+      <View style={[styles.dot, selected ? styles.dotSelected : null]} pointerEvents="none" />
+    ) : (
       <Text style={[type.mapPin, selected ? styles.pinTextSelected : null]} numberOfLines={1}>
         {pin.price}
       </Text>
@@ -57,5 +60,14 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   pinSelected: { backgroundColor: colors.pinBg, zIndex: 5 },
+  pinRaised: { zIndex: 5 },
+  pinCompact: {
+    backgroundColor: 'transparent', shadowOpacity: 0, elevation: 0, overflow: 'visible',
+  },
+  dot: {
+    width: 15.2, height: 9.8, borderRadius: 4.9,
+    backgroundColor: colors.white, borderWidth: 0.7, borderColor: colors.fieldBorder,
+  },
+  dotSelected: { backgroundColor: colors.pinBg, borderColor: colors.pinBg },
   pinTextSelected: { color: colors.pinText },
 });

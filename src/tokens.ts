@@ -1,4 +1,7 @@
 
+import { Platform } from 'react-native';
+import { FontDisplay } from 'expo-font';
+
 export const colors = {
   white: '#FFFFFF',
   page: '#FFFFFF',
@@ -49,18 +52,23 @@ export const colors = {
   selectedTab: '#222222',
 } as const;
 
+const swap = (uri: number) => ({ uri, display: FontDisplay.SWAP });
+
 export const fontFiles = {
-  'Roboto-400': require('../assets/fonts/Roboto_400Regular.ttf'),
-  'Roboto-500': require('../assets/fonts/Roboto_500Medium.ttf'),
-  'Roboto-700': require('../assets/fonts/Roboto_700Bold.ttf'),
-  PJS: require('../assets/fonts/PlusJakartaSans-VF.ttf'),
+  'Roboto-400': swap(require('../assets/fonts/Roboto_400Regular.ttf')),
+  'Roboto-500': swap(require('../assets/fonts/Roboto_500Medium.ttf')),
+  'Roboto-700': swap(require('../assets/fonts/Roboto_700Bold.ttf')),
+  PJS: swap(require('../assets/fonts/PlusJakartaSans-VF.ttf')),
 };
 
+const withFallback = (family: string) =>
+  Platform.OS === 'web' ? `${family}, "Helvetica Neue", Helvetica, Arial, sans-serif` : family;
+
 export const fonts = {
-  sans: 'PJS',
-  num: 'Roboto-500',
-  roboto400: 'Roboto-400',
-  roboto700: 'Roboto-700',
+  sans: withFallback('PJS'),
+  num: withFallback('Roboto-500'),
+  roboto400: withFallback('Roboto-400'),
+  roboto700: withFallback('Roboto-700'),
 } as const;
 
 export const type = {
@@ -109,7 +117,7 @@ export const type = {
   resultSub: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18, fontWeight: '400' as const, color: colors.secondary },
   filterChip: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 16, fontWeight: '600' as const, color: colors.ink },
   overHomes: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18, fontWeight: '700' as const, color: colors.ink },
-  mapPin: { fontFamily: fonts.num, fontSize: 15, lineHeight: 18, fontWeight: '500' as const, color: colors.ink },
+  mapPin: { fontFamily: fonts.roboto700, fontSize: 15, lineHeight: 18, fontWeight: '500' as const, letterSpacing: -0.7, color: colors.ink },
   resultsChip: { fontFamily: fonts.sans, fontSize: 12.6, lineHeight: 16, fontWeight: '400' as const, letterSpacing: -0.72, color: colors.ink },
   resultsTitle: { fontFamily: fonts.sans, fontSize: 14.9, lineHeight: 18.2, fontWeight: '600' as const, letterSpacing: -0.81, color: colors.ink },
   resultsSub: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 15.6, fontWeight: '400' as const, letterSpacing: -0.97, color: colors.secondary },

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { colors, type, radii } from '../tokens';
+import { colors, fonts, type, radii } from '../tokens';
 import { PlusIcon, MinusIcon } from './Icons';
 
 export const CounterRow = ({
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
   },
   left: { width: 145, height: 40.4 },
   label: {
-    fontFamily: 'PJS', fontSize: 16, lineHeight: 20.7, height: 20.7,
-    fontWeight: '400' as const, letterSpacing: -0.15, color: '#000000',
+    fontFamily: fonts.sans, fontSize: 16, lineHeight: 20.7, height: 20.7,
+    fontWeight: '400' as const, letterSpacing: -0.15, color: '#000000', position: 'relative', top: 0.6,
   },
   caption: {
-    fontFamily: 'PJS', fontSize: 12, lineHeight: 15.6, fontWeight: '400' as const,
-    letterSpacing: -0.14, color: colors.secondary, marginTop: 4.1,
+    fontFamily: fonts.sans, fontSize: 12, lineHeight: 15.6, fontWeight: '400' as const,
+    letterSpacing: -0.04, color: colors.secondary, marginTop: 4.1,
   },
   captionRow: { marginTop: -11.6, height: 48, lineHeight: 48 },
   counter: { width: 116.2, height: 48, position: 'relative', marginRight: -7.9 },

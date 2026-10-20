@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { colors, type } from '../tokens';
+import { colors, fonts, type } from '../tokens';
 
 export type DayRange = { start: Date | null; end: Date | null };
 
@@ -97,17 +97,23 @@ const CELL_W = 45.57;
 const styles = StyleSheet.create({
   month: { marginBottom: 0 },
   titleFold: { height: 0, overflow: 'hidden' },
-  monthTitle: { fontFamily: 'PJS', fontSize: 16, lineHeight: 22, fontWeight: '700' as const, color: colors.ink, marginBottom: 8 },
-  dowRow: { flexDirection: 'row' },
-  dow: { width: CELL_W, textAlign: 'center', fontSize: 12, lineHeight: 16, color: colors.secondary },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 6 },
-  cell: { width: CELL_W, height: 44, alignItems: 'center', justifyContent: 'center' },
+  monthTitle: {
+    fontFamily: fonts.sans, fontSize: 18, lineHeight: 22, fontWeight: '600' as const, color: colors.ink,
+    marginTop: 21.7, marginBottom: 20.4,
+  },
+  dowRow: { flexDirection: 'row', marginBottom: 13.6 },
+  dow: {
+    width: CELL_W, textAlign: 'center', fontFamily: fonts.sans, fontSize: 14, lineHeight: 20,
+    fontWeight: '500' as const, color: colors.secondary,
+  },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', rowGap: 4 },
+  cell: { width: CELL_W, height: 46, alignItems: 'center', justifyContent: 'center' },
   cellRange: { backgroundColor: '#F2F2F2' },
-  cellSelected: { backgroundColor: colors.ink, borderRadius: 20 },
-  day: { fontFamily: 'PJS', fontSize: 14, color: colors.ink },
+  cellSelected: { backgroundColor: colors.ink, borderRadius: 23 },
+  day: { fontFamily: fonts.sans, fontSize: 15.5, fontWeight: '700' as const, color: colors.ink },
   dayPast: {
-    fontFamily: 'PJS', fontSize: 14, color: '#8C8C8C',
+    fontFamily: fonts.sans, fontSize: 15.5, fontWeight: '500' as const, color: '#8C8C8C',
     textDecorationLine: 'line-through', textDecorationColor: '#8C8C8C',
   },
-  daySel: { fontFamily: 'PJS', fontSize: 14, fontWeight: '700' as const, color: colors.white },
+  daySel: { fontFamily: fonts.sans, fontSize: 15.5, fontWeight: '700' as const, color: colors.white },
 });

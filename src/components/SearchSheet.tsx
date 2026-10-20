@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, useWindowDimensions, ViewStyle } from 'react-native';
-import { colors, type, space, radii, shadow } from '../tokens';
+import { StyleSheet, View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
+import { colors, fonts, type, space, radii, shadow } from '../tokens';
 import { CloseIcon, SearchIcon, StarIcon } from './Icons';
 import { Calendar, DayRange } from './Calendar';
 import { CounterRow } from './GuestCounter';
@@ -27,9 +27,11 @@ type Props = {
 };
 
 const SEG = ['Homes', 'Experiences', 'Services'];
+const SEG_TRACK: Record<string, number> = { Homes: -0.2, Experiences: -0.255, Services: -0.325 };
 const INK = colors.ink;
 const INK_SECONDARY = colors.secondary;
 const INK_BLACK = '#000000';
+const INK_DISABLED = '#C1C1C1';
 const PICKER: Record<string, string> = {
   where: 'Location picker, Step 1 of 3',
   when: 'Date Picker, Step 2 of 3',
@@ -38,6 +40,7 @@ const PICKER: Record<string, string> = {
 const ACTIVE_H: Record<string, number> = { where: 428.7, when: 504.7, who: 362.8 };
 const INACTIVE_H = 60;
 const CARD_GAP = 16;
+const FOOTER_H = 79;
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export const SearchSheet = (p: Props) => {
@@ -70,6 +73,7 @@ export const SearchSheet = (p: Props) => {
   const isWhen = p.step === 'when';
   const footerLeft = isWhen ? 'Reset' : 'Clear all';
   const footerRight = isWhen ? 'Next' : 'Search';
+  const canClear = p.destination !== null || p.range.start !== null || p.guestsTouched;
 
   const InactiveRow = ({ title, value, valueColor }: { title: string; value: string; valueColor?: string }) => {
     const digits = (value.match(/\d/g) || []).length;
@@ -121,8 +125,6 @@ export const SearchSheet = (p: Props) => {
     <View style={styles.overlay}>
       <TouchableOpacity style={styles.scrim} onPress={p.onClose} accessible={false} />
       <View style={styles.panel} aria-modal={true} role="dialog">
-        <View style={styles.sheetSurface} pointerEvents="none" />
-        <View style={sheetShadow} pointerEvents="none" />
         <View style={styles.header}>
           <TouchableOpacity accessibilityRole="button" onPress={p.onClose} style={styles.closeBtn}>
             <View accessibilityRole="button" accessibilityLabel="Close" style={styles.closeHit} />
@@ -131,7 +133,7 @@ export const SearchSheet = (p: Props) => {
               <CloseIcon size={16} color={INK} />
             </View>
           </TouchableOpacity>
-          <View style={[styles.seg, { width: Math.min(204.5, width - 95.7 - 72) }]}>
+          <View style={[styles.seg, { width: Math.min(248.2, width - 72.4 - 72) }]}>
             {SEG.map((s) => {
               const sel = s === p.category;
               const icon = s === 'Homes' ? '🏠' : s === 'Experiences' ? '🎈' : '🛎';
@@ -145,7 +147,7 @@ export const SearchSheet = (p: Props) => {
                   style={styles.segBtn}
                 >
                   <Text style={styles.segIcon} aria-hidden={true}>{icon}</Text>
-                  <Text style={sel ? styles.segSel : styles.segUnsel}>{s}</Text>
+                  <Text style={[sel ? styles.segSel : styles.segUnsel, { letterSpacing: SEG_TRACK[s] }]}>{s}</Text>
                   {sel ? <View style={styles.segUnderline} pointerEvents="none" /> : null}
                 </TouchableOpacity>
               );
@@ -187,7 +189,7 @@ export const SearchSheet = (p: Props) => {
 
           <StepCard active={p.step === 'when'} label={PICKER.when} height={p.step === 'when' ? ACTIVE_H.when : INACTIVE_H} onPress={() => p.setStep('when')}>
             {p.step === 'when' ? (
-              <View style={[styles.stepBody, { paddingTop: padTop }]}>
+              <View style={[styles.stepBody, styles.stepBodyWhen, { paddingTop: padTop }]}>
                 <Text style={styles.stepTitleBold}>When?</Text>
                 <View style={styles.dateSeg} pointerEvents="none" aria-hidden={true}>
                   <View style={styles.dateSegPill}>
@@ -199,12 +201,12 @@ export const SearchSheet = (p: Props) => {
                   <Calendar year={2026} months={[8, 9]} range={p.range} onSelect={toggleRange} today={new Date(2026, 8, 19)} />
                 </View>
                 <View style={styles.flexChips} pointerEvents="none" aria-hidden={true}>
-                  <View style={[styles.chip, styles.chipExact]}>
-                    <Text style={styles.chipExactText}>Exact dates</Text>
+                  <View style={[styles.chip, styles.chipExact, { width: 89.2 }]}>
+                    <Text style={styles.chipText}>Exact dates</Text>
                   </View>
-                  <View style={styles.chip}><Text style={styles.chipText}>± 1 day</Text></View>
-                  <View style={styles.chip}><Text style={styles.chipText}>± 2 days</Text></View>
-                  <View style={styles.chip}><Text style={styles.chipText}>± 3 days</Text></View>
+                  <View style={[styles.chip, { width: 75.7 }]}><Text style={styles.chipText}>± 1 day</Text></View>
+                  <View style={[styles.chip, { width: 83.0 }]}><Text style={styles.chipText}>± 2 days</Text></View>
+                  <View style={[styles.chip, { width: 83.0 }]}><Text style={styles.chipText}>± 3 days</Text></View>
                 </View>
               </View>
             ) : (
@@ -232,21 +234,28 @@ export const SearchSheet = (p: Props) => {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel={footerLeft} onPress={p.onClear} style={styles.footerLeft}>
-            <Text style={styles.footerText}>{footerLeft}</Text>
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityLabel={footerLeft}
+            accessibilityState={{ disabled: !canClear }}
+            disabled={!canClear}
+            onPress={p.onClear}
+            style={styles.footerLeft}
+          >
+            <Text style={[styles.footerText, canClear ? null : styles.footerTextDisabled]}>{footerLeft}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={footerRight}
             onPress={() => (isWhen ? p.setStep('who') : p.onSearch())}
-            style={[styles.searchBtn, wide ? (isWhen ? styles.searchBtnWhen : styles.searchBtnSearch) : styles.searchBtnNarrow]}
+            style={[styles.searchBtn, isWhen ? styles.searchBtnWhen : styles.searchBtnSearch, wide ? styles.searchBtnWide : styles.searchBtnNarrow]}
           >
             {wide && !isWhen ? (
               <View style={styles.searchBtnGlyph} pointerEvents="none">
                 <SearchIcon size={18} color={colors.white} />
               </View>
             ) : null}
-            <Text style={[styles.footerRight, isWhen && styles.footerRightWhen]}>{footerRight}</Text>
+            <Text style={[styles.footerRight, isWhen ? styles.footerRightWhen : styles.footerRightSearch]}>{footerRight}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -260,36 +269,34 @@ const styles = StyleSheet.create({
   panel: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: colors.sheetBackdrop,
   },
-  sheetSurface: {
-    position: 'absolute', top: colors.sheetTopOffset, left: 0, right: 0, bottom: colors.sheetBottomInset,
-    backgroundColor: colors.white, borderTopLeftRadius: radii.sheetTop, borderTopRightRadius: radii.sheetTop,
-  },
   header: { position: 'absolute', top: 0, left: 0, right: 0, height: 70, zIndex: 2 },
   closeBtn: { position: 'absolute', right: 16, top: 14.9, width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
   closeDisc: { position: 'absolute', width: 40, height: 40, borderRadius: 20, backgroundColor: colors.white },
   closeHit: { position: 'absolute', right: 16, top: 16.1, width: 16, height: 16 },
-  seg: { position: 'absolute', top: 24, left: 95.7, width: 204.5, height: 45, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
-  segBtn: { height: 45, alignItems: 'center' },
-  segIcon: { fontSize: 26, lineHeight: 26, height: 26, marginBottom: 6 },
+  seg: { position: 'absolute', top: 24, left: 72.4, width: 248.2, height: 45, flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'flex-start', gap: 4 },
+  segBtn: { width: 80.1, flexShrink: 1, height: 45, alignItems: 'center' },
+  segIcon: { fontSize: 26, lineHeight: 26, height: 26, marginBottom: 6.55 },
   segUnderline: { position: 'absolute', top: 49, alignSelf: 'center', width: 36, height: 4, borderRadius: 2, backgroundColor: INK_BLACK },
-  segSel: { fontFamily: 'PJS', fontSize: 10, lineHeight: 13, fontWeight: '500' as const, letterSpacing: -0.2, color: INK_BLACK },
-  segUnsel: { fontFamily: 'PJS', fontSize: 10, lineHeight: 13, fontWeight: '500' as const, letterSpacing: -0.2, color: INK_SECONDARY },
-  body: { position: 'absolute', top: 70, left: 0, right: 0, bottom: 49 },
+  segSel: { fontFamily: fonts.sans, fontSize: 10, lineHeight: 13, fontWeight: '600' as const, letterSpacing: -0.2, color: INK_BLACK },
+  segUnsel: { fontFamily: fonts.sans, fontSize: 10, lineHeight: 13, fontWeight: '600' as const, letterSpacing: -0.2, color: INK_SECONDARY },
+  body: { position: 'absolute', top: 70, left: 0, right: 0, bottom: FOOTER_H + 1 },
   bodyInner: { paddingTop: 31.2, paddingHorizontal: 16, paddingBottom: 16 },
   stepCard: {
-    borderWidth: 1, borderColor: colors.fieldBorder, borderRadius: radii.stepRadius, overflow: 'hidden',
+    borderWidth: 1, borderColor: 'transparent', borderRadius: radii.stepRadius, overflow: 'hidden',
     backgroundColor: colors.white, position: 'relative',
+    shadowColor: '#000', shadowOpacity: 0.16, shadowRadius: 4, shadowOffset: { width: 0, height: 2 }, elevation: 3,
   },
-  stepCardActive: { borderColor: colors.ink, marginHorizontal: -4 },
+  stepCardActive: { marginHorizontal: -4 },
+  stepBodyWhen: { height: 502.7, overflow: 'hidden' },
   cardLabel: { position: 'absolute', top: -1, left: -1, right: -1, bottom: -1, zIndex: 0 },
   stepInner: { position: 'relative', zIndex: 1 },
   stepBody: { paddingHorizontal: 23, paddingBottom: 8 },
   stepTitle: {
-    fontFamily: 'PJS', fontSize: 20, lineHeight: 25.8, height: 25.8,
+    fontFamily: fonts.sans, fontSize: 20, lineHeight: 25.8, height: 25.8,
     fontWeight: '500' as const, letterSpacing: -0.28, color: INK,
   },
   stepTitleBold: {
-    fontFamily: 'PJS', fontSize: 20, lineHeight: 25.8, height: 25.8,
+    fontFamily: fonts.sans, fontSize: 20, lineHeight: 25.8, height: 25.8,
     fontWeight: '700' as const, letterSpacing: -0.28, color: INK,
   },
   destFade: {
@@ -297,67 +304,64 @@ const styles = StyleSheet.create({
     backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0) 0%, ${colors.white} 100%)`,
   } as unknown as import('react-native').ViewStyle,
   searchInput: {
-    flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.hairline,
-    borderRadius: 12, paddingHorizontal: 23, height: 56, marginTop: 19.1, marginBottom: 0, gap: 11,
+    flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.fieldBorder,
+    borderRadius: 12, paddingHorizontal: 23, height: 56, marginTop: 19.1, marginBottom: 0, gap: 10.1,
   },
   caption: {
-    fontFamily: 'PJS', fontSize: 12, lineHeight: 15.6, height: 15.6,
-    fontWeight: '400' as const, letterSpacing: -0.229, color: INK, marginTop: 8, marginBottom: 4.1,
+    fontFamily: fonts.sans, fontSize: 12, lineHeight: 15.6, height: 15.6,
+    fontWeight: '400' as const, letterSpacing: -0.256, color: INK, marginTop: 8, marginBottom: 4.1,
   },
   destList: { marginHorizontal: -8 },
   destRow: { height: 72, flexDirection: 'row', alignItems: 'center', paddingHorizontal: 8 },
   destThumb: { width: 56, height: 56, borderRadius: 12, marginRight: 16, alignItems: 'center', justifyContent: 'center' },
   destText: { width: 249 },
   destName: {
-    fontFamily: 'PJS', fontSize: 14, lineHeight: 20.4, height: 20.4,
-    fontWeight: '600' as const, letterSpacing: -0.33, color: INK,
+    fontFamily: fonts.sans, fontSize: 14, lineHeight: 20.4, height: 20.4,
+    fontWeight: '600' as const, letterSpacing: -0.245, color: INK, position: 'relative', top: -0.75,
   },
-  destSub: { fontFamily: 'PJS', fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.195, color: colors.secondary },
-  calendarWrap: { marginTop: 26, height: 300, overflow: 'hidden' },
+  destSub: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.195, color: colors.secondary },
+  calendarWrap: { marginTop: 16.5, height: 340, overflow: 'hidden' },
   dateSeg: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.chipBg,
-    borderRadius: 16, height: 32, marginTop: 14, paddingHorizontal: 3,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.hairlineSoft,
+    borderRadius: 21, height: 41.7, marginTop: 16.5, paddingHorizontal: 4,
   },
   dateSegPill: {
-    flex: 1, height: 26, borderRadius: 13, backgroundColor: colors.white,
+    flex: 1, height: 34, borderRadius: 17, backgroundColor: colors.white,
     alignItems: 'center', justifyContent: 'center',
     shadowColor: '#000', shadowOpacity: 0.08, shadowRadius: 4, shadowOffset: { width: 0, height: 1 }, elevation: 1,
   },
-  dateSegPillText: { fontFamily: 'PJS', fontSize: 13, lineHeight: 17, fontWeight: '600' as const, color: INK },
-  dateSegText: { flex: 1, textAlign: 'center', fontFamily: 'PJS', fontSize: 13, lineHeight: 17, fontWeight: '400' as const, color: INK },
+  dateSegPillText: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18, fontWeight: '600' as const, color: INK },
+  dateSegText: { flex: 1, textAlign: 'center', fontFamily: fonts.sans, fontSize: 14, lineHeight: 18, fontWeight: '600' as const, color: INK },
   flexChips: {
-    position: 'absolute', left: 0, right: -6, bottom: 6, paddingLeft: 23, paddingTop: 26,
-    flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: colors.white,
+    position: 'absolute', left: 0, right: 0, bottom: 0, paddingLeft: 23, paddingTop: 12.1, paddingBottom: 11,
+    flexDirection: 'row', alignItems: 'center', gap: 12.3, backgroundColor: colors.white,
+    borderTopWidth: 1, borderTopColor: colors.hairline,
   },
   chip: {
-    height: 32, borderRadius: 16, backgroundColor: colors.chipBg,
-    paddingHorizontal: 14, alignItems: 'center', justifyContent: 'center',
+    height: 32, borderRadius: 16, backgroundColor: colors.white, borderWidth: 1, borderColor: colors.hairline,
+    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
   },
-  chipExact: { backgroundColor: colors.white, borderWidth: 1.5, borderColor: INK },
-  chipText: { fontFamily: 'PJS', fontSize: 13, lineHeight: 17, fontWeight: '400' as const, color: INK },
-  chipExactText: { fontFamily: 'PJS', fontSize: 13, lineHeight: 17, fontWeight: '600' as const, color: INK },
-  counters: { marginTop: 7.75 },
+  chipExact: { borderWidth: 1.8, borderColor: INK },
+  chipText: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 17, fontWeight: '400' as const, color: INK },
+  counters: { marginTop: 8.35 },
   inactiveRow: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 19 },
-  inactiveTitle: { fontFamily: 'PJS', fontSize: 14, lineHeight: 18.2, height: 18.2, fontWeight: '600' as const, letterSpacing: -0.15, color: INK_SECONDARY },
-  inactiveValue: { fontFamily: 'PJS', fontSize: 14, lineHeight: 18.2, height: 18.2, fontWeight: '600' as const, letterSpacing: -0.15, color: INK_BLACK },
-  inputPlaceholder: { fontFamily: 'PJS', fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.242, color: INK_SECONDARY },
-  footer: { position: 'absolute', bottom: 14, left: 0, right: 0, height: 49, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', paddingHorizontal: 24, borderTopWidth: 1, borderTopColor: colors.hairlineSoft, zIndex: 2 },
-  footerLeft: { paddingVertical: 6 },
-  footerText: { fontFamily: 'PJS', fontSize: 16, lineHeight: 20, fontWeight: '600' as const, color: INK },
-  searchBtn: { position: 'absolute', top: 2.5, backgroundColor: colors.searchPink, borderRadius: 24, paddingHorizontal: 14, paddingVertical: 12 },
-  searchBtnSearch: { left: 238.4, width: 130, paddingLeft: 49.2 },
+  inactiveTitle: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, height: 18.2, fontWeight: '600' as const, letterSpacing: -0.15, color: INK_SECONDARY },
+  inactiveValue: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, height: 18.2, fontWeight: '600' as const, letterSpacing: -0.27, color: INK_BLACK },
+  inputPlaceholder: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.242, color: INK_SECONDARY, position: 'relative', top: 0.5 },
+  footer: { position: 'absolute', bottom: 0, left: 0, right: 0, height: FOOTER_H, backgroundColor: colors.sheetBackdrop, zIndex: 2 },
+  footerLeft: { position: 'absolute', left: 12, top: 16, width: 80.1, height: 48, paddingLeft: 12, paddingTop: 2, justifyContent: 'center' },
+  footerText: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 20.7, fontWeight: '600' as const, letterSpacing: -0.105, color: INK },
+  footerTextDisabled: { color: INK_DISABLED },
+  searchBtn: {
+    position: 'absolute', top: 16, width: 130.3, height: 48, borderRadius: 12,
+    backgroundColor: colors.searchPink, justifyContent: 'center',
+  },
+  searchBtnSearch: { alignItems: 'flex-start', paddingLeft: 49.1 },
   searchBtnGlyph: { position: 'absolute', left: 16.6, top: 0, bottom: 0, justifyContent: 'center' },
-  searchBtnWhen: { left: 271.7, backgroundColor: INK },
+  searchBtnWhen: { alignItems: 'center', backgroundColor: INK },
   searchBtnNarrow: { right: 24 },
-  footerRight: { fontFamily: 'PJS', fontSize: 15, lineHeight: 20, fontWeight: '700' as const, color: colors.white },
-  footerRightWhen: { letterSpacing: 0.2625 },
+  searchBtnWide: { left: 238.7 },
+  footerRight: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 20, fontWeight: '700' as const, color: colors.white },
+  footerRightSearch: { letterSpacing: 0.13 },
+  footerRightWhen: { letterSpacing: 0.5125 },
 });
-
-const sheetShadow = {
-  position: 'absolute',
-  bottom: colors.sheetBottomInset - colors.sheetShadowHeight,
-  left: 0,
-  right: 0,
-  height: colors.sheetShadowHeight,
-  backgroundImage: `linear-gradient(to bottom, rgba(0,0,0,${colors.sheetShadowTopAlpha}) 0%, rgba(0,0,0,0) 100%)`,
-} as unknown as ViewStyle;
