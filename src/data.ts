@@ -115,17 +115,17 @@ export const detailListing = {
   badge: 'Guest favorite',
   freeCancel: 'Free cancellation',
   host: {
-    name: 'William, Sana & Sons',
-    nameLine: 'Hosted by William, Sana & Sons',
+    name: 'Wilder, Sage & Sons',
+    nameLine: 'Hosted by Wilder, Sage & Sons',
     sub: 'Superhost · 3 years hosting',
     superhost: 'Superhost',
-    desc: 'William, Sana & Sons is a superhost. Learn more about William, Sana & Sons.',
+    desc: 'Wilder, Sage & Sons is a superhost. Learn more about Wilder, Sage & Sons.',
   },
   blocks: [
     { title: 'Top 10% of homes', desc: 'This home is highly ranked based on ratings, reviews, and reliability.' },
     { title: 'In the hills above Half Moon Bay', desc: 'On a 10-acre mountainside with ocean views toward Half Moon Bay and trails nearby' },
     { title: 'Safari tent with a private deck', desc: 'A 210 sq ft safari tent on a wooden deck with a wood stove, fire pit, and down bedding' },
-    { title: 'Stunning views and thoughtful hosts', desc: 'Guests describe the views as breathtaking and praise hosts William and Sana by name' },
+    { title: 'Stunning views and thoughtful hosts', desc: 'Guests describe the views as breathtaking and praise hosts Wilder and Sage by name' },
   ],
   body:
     'Breathe deep in nature on Kings Mountain CA. Our safari-style tents blend comfort and adventure with ' +

@@ -14,10 +14,9 @@ const Header = ({ title, onClose }: { title: string; onClose: () => void }) => (
       activeOpacity={0.7}
       style={styles.backBtn}
     >
-      <BackIcon size={22} color={colors.ink} />
+      <BackIcon size={16} color={colors.ink} />
     </TouchableOpacity>
-    <Text style={[type.sheetTitle, styles.headerTitle]} numberOfLines={1}>{title}</Text>
-    <View style={styles.headerSpacer} />
+    <Text style={[type.tourTitle, styles.headerTitle]} numberOfLines={1}>{title}</Text>
   </View>
 );
 
@@ -130,13 +129,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.white, zIndex: 62, overflow: 'hidden',
   },
   header: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    height: 56, paddingHorizontal: space.sheetPad,
-    borderBottomWidth: 1, borderBottomColor: colors.hairlineSoft,
+    height: 64.8, borderBottomWidth: 1, borderBottomColor: colors.hairlineSoft,
   },
-  backBtn: { width: 40, height: 40, marginLeft: -8, alignItems: 'center', justifyContent: 'center' },
-  headerTitle: { flex: 1, textAlign: 'center', fontSize: 17 },
-  headerSpacer: { width: 32 },
+  backBtn: { position: 'absolute', left: 8, top: 8.4, width: 48, height: 48, alignItems: 'center', justifyContent: 'center' },
+  headerTitle: { position: 'absolute', left: 56, top: 22.2, right: 24 },
   scroll: { flex: 1 },
   content: { paddingHorizontal: space.contentPad, paddingTop: 24 },
   footerSpace: { height: 40 },

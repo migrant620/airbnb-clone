@@ -25,7 +25,7 @@ export const SearchPillWrap = ({ onPress }: { onPress: () => void }) => (
 
 const TABS: { key: string; icon: string; track?: number }[] = [
   { key: 'All', icon: '🌍', track: -0.075 },
-  { key: 'Homes', icon: '🏠' },
+  { key: 'Homes', icon: '🏠', track: -1.175 },
   { key: 'Experiences', icon: '🎈' },
   { key: 'Services', icon: '🛎' },
 ];

@@ -8,13 +8,10 @@ import { span, insetOf, rightAt } from '../layout';
 import { BottomNav } from './Chrome';
 import { mapPins, mapResult, mapResultLabel, filterChips, feedHomes, feedHotels, Listing } from '../data';
 
-const visiblePins = (() => {
-  const priced = mapPins.filter((p) => !p.compact);
-  const kept = priced.filter((p, i) =>
-    priced.slice(0, i).every((q) => Math.abs(q.x - p.x) > q.w * 0.6 || Math.abs(q.y - p.y) > q.h * 0.6),
-  );
-  return [...mapPins.filter((p) => p.compact), ...kept];
-})();
+const visiblePins = [
+  ...mapPins.filter((p) => p.compact).reverse(),
+  ...mapPins.filter((p) => !p.compact).reverse(),
+];
 
 const R = {
   mapTop: 127.7,

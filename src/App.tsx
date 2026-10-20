@@ -22,6 +22,8 @@ import { DayRange } from './components/Calendar';
 import { detailListing, detailListingCard, Listing } from './data';
 import { useVariableWeightFont } from './webfont';
 
+const FONT_GRACE_MS = 1200;
+
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const LOGGED_OUT_TABS = ['wishlists', 'trips', 'messages', 'login'] as const;
@@ -62,6 +64,12 @@ function WishlistsScreen({
 
 function Shell() {
   const [fontsLoaded, fontError] = useFonts(fontFiles);
+  const [fontGraceOver, setFontGraceOver] = React.useState(false);
+  React.useEffect(() => {
+    if (fontsLoaded || fontError) return undefined;
+    const t = setTimeout(() => setFontGraceOver(true), FONT_GRACE_MS);
+    return () => clearTimeout(t);
+  }, [fontsLoaded, fontError]);
   useVariableWeightFont();
   const insets = useSafeAreaInsets();
   const feedRef = React.useRef<ScrollView>(null);
@@ -109,7 +117,7 @@ function Shell() {
     if (screen === 'explore') restoreFeed();
   }, [screen, restoreFeed]);
 
-  if (!fontsLoaded && !fontError) return null;
+  if (!fontsLoaded && !fontError && !fontGraceOver) return null;
 
   const datesText = (() => {
     const f = (dt: Date | null) => (dt ? `${MONTHS[dt.getMonth()]} ${dt.getDate()}` : null);
