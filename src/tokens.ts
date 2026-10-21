@@ -20,6 +20,7 @@ export const colors = {
   chipBg: '#F7F7F7',
   chipSelected: '#E3E2E0',
   chipBorder: '#DDDDDD',
+  stepperDisabled: '#C1C1C1',
   counterCircle: '#F2F2F2',
   guestFavBg: 'rgba(255,255,255,0.95)',
   guestFavInk: '#222222',

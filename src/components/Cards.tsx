@@ -51,7 +51,7 @@ export const ListingCard = React.memo(({
       >
         <PhotoHeartIcon size={24} fill={favorite ? colors.brand : undefined} />
       </TouchableOpacity>
-      <View style={styles.textBlock}>
+      <View style={styles.textBlock} aria-hidden={true}>
         <Text style={[type.cardTitle, styles.title]} numberOfLines={2}>{listing.title}</Text>
         <View style={styles.priceRow}>
           <Text style={[type.cardPrice, styles.priceSmall]}>{listing.priceForNights}</Text>
@@ -63,23 +63,6 @@ export const ListingCard = React.memo(({
     </View>
   </TouchableOpacity>
 ));
-
-export const CategoryThumb = ({
-  label,
-  photo,
-  selected,
-  onPress,
-}: {
-  label: string;
-  photo: number;
-  selected: boolean;
-  onPress: () => void;
-}) => (
-  <TouchableOpacity accessibilityRole="button" accessibilityLabel={label} onPress={onPress} style={styles.thumb}>
-    <Image source={photo} style={[styles.thumbImg, selected && styles.thumbSelected]} resizeMode="cover" />
-    <Text style={selected ? type.tabSelected : type.tab} numberOfLines={1}>{label}</Text>
-  </TouchableOpacity>
-);
 
 const styles = StyleSheet.create({
   card: { width: space.cardWidth },
@@ -104,10 +87,4 @@ const styles = StyleSheet.create({
   title: { lineHeight: 16 },
   priceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3.3, gap: 2, flexWrap: 'nowrap' },
   dotSep: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: colors.secondary, flexShrink: 0 },
-  thumb: { width: 108, marginRight: 12, alignItems: 'center' },
-  thumbImg: {
-    width: 108, height: 108, borderRadius: 12, backgroundColor: colors.mapBlock,
-    borderWidth: 0,
-  },
-  thumbSelected: { borderWidth: 2, borderColor: colors.ink },
 });

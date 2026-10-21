@@ -100,14 +100,15 @@ export const BottomNav = ({
   </View>
 );
 
-export const FooterNote = () => (
+export const FooterNote = ({ onPress }: { onPress?: () => void }) => (
   <>
     <View style={styles.footerPill} pointerEvents="none" />
     <TouchableOpacity
       accessibilityRole="button"
       accessibilityLabel="Prices include all fees"
+      onPress={onPress}
       style={styles.footerNote}
-      activeOpacity={1}
+      activeOpacity={0.8}
     >
       <View style={styles.footerTag} pointerEvents="none">
         <Svg width={17} height={17} viewBox="0 0 24 24">
@@ -148,15 +149,6 @@ const styles = StyleSheet.create({
   tabBtnSelected: { backgroundColor: colors.chipSelected, borderRadius: space.tabsHeight / 2 },
   tabLabel: { position: 'relative', top: 0.7 },
   tabLabelSelected: { position: 'relative', top: 1.8 },
-  tabThumb: { width: space.tabIconBox, height: space.tabIconBox, borderRadius: 8 },
-  tabThumbFallback: {
-    width: space.tabIconBox, height: space.tabIconBox, borderRadius: 8,
-    backgroundColor: colors.chipBg, borderWidth: 1, borderColor: colors.hairline,
-  },
-  tabUnderline: {
-    position: 'absolute', bottom: 2, left: space.tabPadLeft, width: 22, height: 2,
-    backgroundColor: colors.selectedTab, borderRadius: 1,
-  },
   nav: {
     position: 'absolute', left: 0, right: 0, bottom: 0, height: space.navHeight,
     backgroundColor: colors.white, flexDirection: 'row', alignItems: 'flex-start',
