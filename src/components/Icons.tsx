@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Svg, { Path, Circle, Rect, G, Line } from 'react-native-svg';
+import Svg, { Path, Circle, Rect, G, Line, Ellipse, Defs, LinearGradient, Stop } from 'react-native-svg';
 import type { AmenityGlyph } from '../data';
 
 type P = { size?: number; color?: string };
@@ -31,6 +31,54 @@ export const HeartIcon = ({ size = 24, color = '#222', strokeColor, filled = fal
     />
   </Svg>
 );
+
+export const PhotoHeartIcon = ({ size = 24, fill = 'rgba(0,0,0,0.5)' }: { size?: number; fill?: string }) => (
+  <Svg width={size} height={size} viewBox="0 0 32 32">
+    <Path
+      d="M16 28c7-4.7 14-10 14-17a7 7 0 0 0-7-7c-1.8 0-3.6.7-5 2.1L16 8.1l-2-2A7 7 0 0 0 2 11c0 7 7 12.3 14 17z"
+      fill={fill}
+      stroke="#fff"
+      strokeWidth={2}
+      strokeLinejoin="round"
+    />
+  </Svg>
+);
+
+export const SuperhostMark = ({ width = 14.9, height = 17.8, color = '#FF385C' }: { width?: number; height?: number; color?: string }) => {
+  const ribbon = 'M1.6 2.3Q1.6 1.6 2.3 1.6H12.9Q13.6 1.6 13.6 2.3V5.7L7.6 9L1.6 5.7Z';
+  return (
+    <Svg width={width} height={height} viewBox="0 0 14.9 17.8">
+      <Path d={ribbon} fill="#fff" stroke="#fff" strokeWidth={2.9} strokeLinejoin="round" />
+      <Circle cx={7.8} cy={13.45} r={2.85} fill="#fff" stroke="#fff" strokeWidth={2.9} />
+      <Path d={ribbon} fill={color} />
+      <Circle cx={7.8} cy={13.45} r={2.85} fill={color} />
+    </Svg>
+  );
+};
+
+export const LaurelIcon = ({ width = 17.5, height = 31.7, mirrored = false }: { width?: number; height?: number; mirrored?: boolean }) => {
+  const id = mirrored ? 'laurelR' : 'laurelL';
+  const leaves: [number, number, number][] = [
+    [10.4, 4.4, 20], [6.4, 10.2, -10], [4.9, 16.4, -32], [5.8, 22.2, -58], [9.4, 26.8, -82],
+  ];
+  return (
+    <Svg width={width} height={height} viewBox="0 0 17.5 31.7">
+      <Defs>
+        <LinearGradient id={id} x1="0" y1="0" x2="1" y2="1">
+          <Stop offset="0" stopColor="#FFED6F" />
+          <Stop offset="0.5" stopColor="#DDBB3C" />
+          <Stop offset="1" stopColor="#AC8014" />
+        </LinearGradient>
+      </Defs>
+      <G transform={mirrored ? 'translate(17.5 0) scale(-1 1)' : undefined}>
+        <Path d="M16.4 30.2C14 31.6 11 30.6 8.6 28.4 4.6 24.8 2.8 18.4 4 12.4 4.8 8.6 6.8 5.4 9.4 3" stroke={`url(#${id})`} strokeWidth={1.3} fill="none" strokeLinecap="round" />
+        {leaves.map(([cx, cy, rot]) => (
+          <Ellipse key={`${cx}-${cy}`} cx={cx} cy={cy} rx={2.3} ry={3.7} fill={`url(#${id})`} transform={`rotate(${rot} ${cx} ${cy})`} />
+        ))}
+      </G>
+    </Svg>
+  );
+};
 
 export const MagnifierIcon = ({ size = 24, color = '#222' }: P) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -152,10 +200,10 @@ export const ArrowRightIcon = ({ size = 18, color = '#222' }: P) => (
 
 export const GoogleIcon = ({ size = 24 }: P) => (
   <Svg width={size} height={size} viewBox="0 0 24 24">
-    <Path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-    <Path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-    <Path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-    <Path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+    <Path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#518EF8" />
+    <Path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#28B446" />
+    <Path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBB00" />
+    <Path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#F14336" />
   </Svg>
 );
 

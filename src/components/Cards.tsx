@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native';
 import { colors, type, space, radii } from '../tokens';
-import { HeartIcon, StarIcon } from './Icons';
+import { PhotoHeartIcon, StarIcon } from './Icons';
 import type { Listing } from '../data';
 
 export const listingLabel = (l: Listing) =>
@@ -39,7 +39,7 @@ export const ListingCard = React.memo(({
       />
       {listing.badge ? (
         <View style={styles.badge} pointerEvents="none">
-          <Text style={type.badgePill}>{listing.badge}</Text>
+          <Text style={styles.badgeText}>{listing.badge}</Text>
         </View>
       ) : null}
       <TouchableOpacity
@@ -49,15 +49,15 @@ export const ListingCard = React.memo(({
         style={styles.heart}
         hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
       >
-        <HeartIcon size={24} color={favorite ? colors.brand : '#304E76'} strokeColor="#fff" filled />
+        <PhotoHeartIcon size={24} fill={favorite ? colors.brand : undefined} />
       </TouchableOpacity>
       <View style={styles.textBlock}>
-        <Text style={type.cardTitle} numberOfLines={2}>{listing.title}</Text>
+        <Text style={[type.cardTitle, styles.title]} numberOfLines={2}>{listing.title}</Text>
         <View style={styles.priceRow}>
-          <Text style={type.cardPrice}>{listing.priceForNights}</Text>
+          <Text style={[type.cardPrice, styles.priceSmall]}>{listing.priceForNights}</Text>
           <View style={styles.dotSep} pointerEvents="none" />
-          <StarIcon size={11} color={colors.star} />
-          <Text style={type.cardRatingNum}>{String(listing.rating)}</Text>
+          <StarIcon size={10.2} color={colors.secondary} />
+          <Text style={[type.cardRatingNum, styles.priceSmall]}>{String(listing.rating)}</Text>
         </View>
       </View>
     </View>
@@ -90,16 +90,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.mapBlock,
   },
   badge: {
-    position: 'absolute', top: 10, left: 10,
-    backgroundColor: colors.guestFavBg, paddingHorizontal: 10, paddingVertical: 5,
-    borderRadius: 14,
+    position: 'absolute', top: 12, left: 12, height: 22.6,
+    backgroundColor: 'rgba(255,255,255,0.8)', paddingHorizontal: 9.9,
+    borderRadius: 11.3, justifyContent: 'center',
   },
+  badgeText: { ...type.badgePill, fontSize: 11, lineHeight: 22.6 },
+  priceSmall: { fontSize: 12, lineHeight: 16, color: colors.secondary },
   heart: {
-    position: 'absolute', top: 8, right: 8,
+    position: 'absolute', top: 8.5, right: 8,
     width: 32, height: 32, alignItems: 'center', justifyContent: 'center',
   },
-  textBlock: { paddingTop: 8, paddingHorizontal: 4 },
-  priceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3, gap: 2, flexWrap: 'nowrap' },
+  textBlock: { paddingTop: 4.7, paddingHorizontal: 4 },
+  title: { lineHeight: 16 },
+  priceRow: { flexDirection: 'row', alignItems: 'center', marginTop: 3.3, gap: 2, flexWrap: 'nowrap' },
   dotSep: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: colors.secondary, flexShrink: 0 },
   thumb: { width: 108, marginRight: 12, alignItems: 'center' },
   thumbImg: {

@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     fontWeight: '700' as const, letterSpacing: -0.28, color: INK,
   },
   destFade: {
-    position: 'absolute', left: 0, right: 0, bottom: 7.6, height: 28.1,
+    position: 'absolute', left: 0, right: 0, bottom: 6.3, height: 32.5,
     backgroundImage: `linear-gradient(to bottom, rgba(255,255,255,0) 0%, ${colors.white} 100%)`,
   } as unknown as import('react-native').ViewStyle,
   searchInput: {

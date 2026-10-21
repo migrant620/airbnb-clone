@@ -55,17 +55,17 @@ export type MapResult = {
 };
 
 export const mapResult: MapResult = {
-  id: 'r-montara',
-  name: 'Tent 03 - Overlook w/ocean view',
-  location: 'Tent in Woodside',
+  id: 'r-bolinas',
+  name: 'Fern Hollow Cottage',
+  location: 'Home in Bolinas',
   badge: 'Guest favorite',
-  rating: 4.97,
-  reviews: 76,
+  rating: 4.83,
+  reviews: 719,
   beds: '1 queen bed',
   baths: '1 bath',
-  priceForNights: '$304 for 1 night',
-  priceWas: '$336',
-  photo: img.h03,
+  priceForNights: '$231 for 1 night',
+  priceWas: '$258',
+  photo: img.h02,
 };
 
 export const mapResultLabel = (l: MapResult) =>

@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
   label: {
     fontFamily: fonts.sans, fontSize: 16, lineHeight: 20.7, height: 20.7,
     fontWeight: '400' as const, letterSpacing: -0.15, color: '#000000', position: 'relative', top: 0.6,
+    zIndex: 1,
   },
   caption: {
     fontFamily: fonts.sans, fontSize: 12, lineHeight: 15.6, fontWeight: '400' as const,

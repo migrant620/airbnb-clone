@@ -111,7 +111,7 @@ export const type = {
   loginTitle: { fontFamily: fonts.sans, fontSize: 26, lineHeight: 32, fontWeight: '700' as const, color: colors.ink, letterSpacing: -0.61 },
   loginInput: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 22, fontWeight: '400' as const, letterSpacing: -0.13, color: colors.secondary },
   loginContinue: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 20, fontWeight: '600' as const, letterSpacing: -0.21, color: colors.white },
-  loginOr: { fontFamily: fonts.sans, fontSize: 16, lineHeight: 20, fontWeight: '500' as const, letterSpacing: -1.2, color: colors.ink },
+  loginOr: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18.2, fontWeight: '400' as const, letterSpacing: -0.25, color: colors.ink },
   footerNote: { fontFamily: fonts.sans, fontSize: 13, lineHeight: 17, fontWeight: '600' as const, color: colors.ink },
   resultTitle: { fontFamily: fonts.sans, fontSize: 15, lineHeight: 19, fontWeight: '600' as const, color: colors.ink },
   resultSub: { fontFamily: fonts.sans, fontSize: 14, lineHeight: 18, fontWeight: '400' as const, color: colors.secondary },
