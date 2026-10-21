@@ -17,7 +17,7 @@
 
 Created to help people get to know Airbnb's booking flow through a hands-on exploration of its interface, and to appreciate the details that make browsing places to stay feel effortless. For the full experience of searching and booking, explore [Airbnb](https://www.airbnb.com).
 
-Everything runs locally in your browser with sample data; it does not connect to an Airbnb account and cannot place a booking.
+Everything runs locally in your browser with sample data; it does not connect to an Airbnb account and cannot place a booking. Listing photos are AI-generated placeholders, not photos of real places.
 
 ## Design notes
 
@@ -85,7 +85,7 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Demo build
 
-The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-10-20 (GitHub Pages commit `9aa1d400`).
+The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-10-21 (GitHub Pages commit `3f57c3de`).
 
 ## Scope and limitations
 

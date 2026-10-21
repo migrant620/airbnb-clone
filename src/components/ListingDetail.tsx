@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ScrollView, Image, useWindowDimensions } from 'react-native';
 import { colors, type } from '../tokens';
-import { BackIcon, ShareIcon, HeartIcon, StarIcon, TrophyIcon, PinIcon, CheckCircleIcon, PhotoIcon, AmenityMark } from './Icons';
+import { BackIcon, ShareIcon, HeartIcon, StarIcon, TrophyIcon, PinIcon, CheckCircleIcon, PhotoIcon, AmenityMark, SuperhostMark, LaurelIcon } from './Icons';
 import { detailListing, PHOTO_TOTAL, amenityPreview, amenityTotal } from '../data';
 import { insetOf, rightAt, lowAt, lowRight, span } from '../layout';
 
 
 const W = 393;
 
+const BAND_GLYPH_SIZE = [30.4, 28.6, 26.5, 26];
 const BandGlyph = ({ index }: { index: number }) => {
-  const size = 26;
+  const size = BAND_GLYPH_SIZE[index] ?? 26;
   if (index === 0) return <TrophyIcon size={size} />;
   if (index === 1) return <PinIcon size={size} />;
   if (index === 2) return <CheckCircleIcon size={size} />;
   return <PhotoIcon size={size} />;
 };
+const BAND_ICON_RISE = 12.6;
 const PAD = 49.5;
 const SCROLL_H = 851.5;
 const AMEN = { divider: 1388, top: 1414, btnH: 48 };
@@ -37,15 +39,18 @@ const R = {
   meta: { x: 24, y: 474.9, w: 345, h: 18.2 },
   reviews: { x: 16, y: 517.1, w: 358.8, h: 41.8 },
   rating: { x: 46.9, y: 518.2, w: 34.9, h: 23.7 },
-  stars: { x: 41, y: 547.6, w: 48.8, h: 9.4 },
+  stars: { x: 38.9, y: 541.7, w: 51.7, h: 10.1 },
+  bandRuleL: { x: 114.0, y: 521.5, w: 1.1, h: 32 },
+  bandRuleR: { x: 278.5, y: 521.5, w: 1.1, h: 32 },
   guestFav: { x: 164.8, y: 517.1, w: 61.1, h: 36.8 },
-  laurelL: { x: 126.6, y: 517.1, w: 48, h: 44.4 },
-  laurelR: { x: 216.1, y: 517.1, w: 48, h: 44.4 },
+  laurelL: { x: 142.4, y: 522.0, w: 17.5, h: 31.7 },
+  laurelR: { x: 231.1, y: 522.0, w: 17.5, h: 31.7 },
   reviewCount: { x: 304.6, y: 517.1, w: 46.2, h: 41.5 },
-  chipPill: { x: 142.4, y: 578.9, w: 108.1, h: 28.6 },
+  chipPill: { x: 149.1, y: 583.3, w: 95.3, h: 19.3 },
   freeCancel: { x: 152.8, y: 585.5, w: 87.3, h: 14.2 },
-  dividerA: { x: 24, y: 610.9, w: 345, h: 1.1 },
+  dividerA: { x: 24, y: 634.3, w: 345, h: 1.1 },
   avatar: { x: 20, y: 655.4, w: 48, h: 48 },
+  avatarPhoto: { x: 4, y: 4, d: 40 },
   superhostHit: { x: 24, y: 659.4, w: 40, h: 40 },
   superhostBadge: { x: 51.3, y: 683.8, w: 14.9, h: 17.8 },
   hostName: { x: 80.1, y: 659.4, w: 234, h: 20.7 },
@@ -196,14 +201,20 @@ export const ListingDetail = ({
         </Text>
         <View style={[at(R.stars.x, R.stars.y, R.stars.w, R.stars.h), styles.stars]} pointerEvents="none">
           {[0, 1, 2, 3, 4].map((i) => (
-            <StarIcon key={i} size={8.6} color={colors.ink} />
+            <StarIcon key={i} size={10.1} color={colors.ink} />
           ))}
         </View>
-        <Text aria-hidden style={[styles.laurel, styles.noHit, at(R.laurelL.x, R.laurelL.y, R.laurelL.w, R.laurelL.h)]}>🏅</Text>
+        <View style={[at(R.bandRuleL.x, R.bandRuleL.y, R.bandRuleL.w, R.bandRuleL.h), styles.divider]} pointerEvents="none" />
+        <View style={[at(R.bandRuleR.x, R.bandRuleR.y, R.bandRuleR.w, R.bandRuleR.h), styles.divider]} pointerEvents="none" />
+        <View aria-hidden style={[styles.noHit, at(R.laurelL.x, R.laurelL.y, R.laurelL.w, R.laurelL.h)]}>
+          <LaurelIcon width={R.laurelL.w} height={R.laurelL.h} />
+        </View>
         <Text style={[type.pdpGuestFav, styles.centred, styles.noHit, at(R.guestFav.x, R.guestFav.y, R.guestFav.w, R.guestFav.h)]}>
           {'Guest\nfavorite'}
         </Text>
-        <Text aria-hidden style={[styles.laurel, styles.noHit, at(R.laurelR.x, R.laurelR.y, R.laurelR.w, R.laurelR.h)]}>🏅</Text>
+        <View aria-hidden style={[styles.noHit, at(R.laurelR.x, R.laurelR.y, R.laurelR.w, R.laurelR.h)]}>
+          <LaurelIcon width={R.laurelR.w} height={R.laurelR.h} mirrored />
+        </View>
         <TouchableOpacity
           accessibilityRole="button"
           accessibilityLabel="76 reviews"
@@ -222,7 +233,7 @@ export const ListingDetail = ({
         <View style={[span(R.dividerA.x, R.dividerA.y, R_INSET.dividerA, R.dividerA.h), styles.divider]} pointerEvents="none" />
 
         <TouchableOpacity accessibilityRole="button" onPress={onOpenHost} activeOpacity={1} style={at(R.avatar.x, R.avatar.y, R.avatar.w, R.avatar.h)}>
-          <Image source={photos[0].file} style={styles.avatarImg} resizeMode="cover" />
+          <Image source={photos[0].file} style={[at(R.avatarPhoto.x, R.avatarPhoto.y, R.avatarPhoto.d, R.avatarPhoto.d), styles.avatarImg]} resizeMode="cover" />
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel={host.desc}
@@ -235,8 +246,10 @@ export const ListingDetail = ({
             accessibilityLabel={host.superhost}
             onPress={onOpenHost}
             activeOpacity={1}
-            style={[at(R.superhostBadge.x - R.avatar.x, R.superhostBadge.y - R.avatar.y, R.superhostBadge.w, R.superhostBadge.h), styles.superhostBadge]}
-          />
+            style={at(R.superhostBadge.x - R.avatar.x, R.superhostBadge.y - R.avatar.y, R.superhostBadge.w, R.superhostBadge.h)}
+          >
+            <View pointerEvents="none"><SuperhostMark width={R.superhostBadge.w} height={R.superhostBadge.h} /></View>
+          </TouchableOpacity>
         </TouchableOpacity>
         <Text style={[type.pdpHostName, at(R.hostName.x, R.hostName.y, R.hostName.w, R.hostName.h)]} numberOfLines={1}>{host.nameLine}</Text>
         <Text style={[type.pdpHostSub, at(R.hostSub.x, R.hostSub.y, R.hostSub.w, R.hostSub.h)]} numberOfLines={1}>{host.sub}</Text>
@@ -245,7 +258,7 @@ export const ListingDetail = ({
 
         {blocks.map((b, i) => (
           <React.Fragment key={b.title}>
-            <View style={[at(R.bandIcon.x, R.bandTops[i], R.bandIcon.w, R.bandIcon.h), styles.bandIconBox]} pointerEvents="none">
+            <View style={[at(R.bandIcon.x, R.bandTops[i] - BAND_ICON_RISE, R.bandIcon.w, R.bandIcon.h), styles.bandIconBox]} pointerEvents="none">
               <BandGlyph index={i} />
             </View>
             <Text style={[type.pdpBlockTitle, atMin(R.bandTitle.x, R.bandTops[i], R.bandTitleW[i], R.bandTitle.h), R.bandTitleTrack[i] === undefined ? null : { letterSpacing: R.bandTitleTrack[i] }]} numberOfLines={1}>
@@ -362,13 +375,11 @@ const styles = StyleSheet.create({
   counterPill: { backgroundColor: 'rgba(0,0,0,0.62)', borderRadius: 6, alignItems: 'center', justifyContent: 'center' },
   stars: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   noHit: { pointerEvents: 'none' },
-  laurel: { fontSize: 26, lineHeight: 44.4, textAlign: 'center', color: colors.ink },
   centred: { textAlign: 'center' },
   reviewCountText: { textAlign: 'center', letterSpacing: -1.6 },
-  chipPill: { backgroundColor: '#F7F7F7', borderRadius: 6, alignItems: 'center', justifyContent: 'center' },
+  chipPill: { backgroundColor: '#F5F5F5', borderRadius: 4.7 },
   divider: { backgroundColor: colors.hairline },
-  avatarImg: { width: 48, height: 48, borderRadius: 24, backgroundColor: colors.mapBlock },
-  superhostBadge: { backgroundColor: colors.brand, borderRadius: 4 },
+  avatarImg: { borderRadius: 20, backgroundColor: colors.mapBlock },
   bandIconBox: { alignItems: 'center', justifyContent: 'center' },
   topBtn: { alignItems: 'center', justifyContent: 'center' },
   topDisc: { position: 'absolute', width: 40, height: 40, borderRadius: 20, backgroundColor: colors.white },

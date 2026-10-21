@@ -14,14 +14,18 @@ type Row = {
   railGap: number;
   cardHeights: number[];
   imageHeights: number[];
+  arrowTop: number;
 };
+
+const CARD_IMAGE_H = 162.2;
+const HOTEL_MID_IMAGE_H = 129;
 
 const H1 = 201.2;
 const H2 = 217.2;
 
 const rowsFor = (cat: string): Row[] => {
-  const h1 = { padTop: space.row1HeadingTop, railGap: space.row1RailGap, cardHeights: [H1, H1, H1], imageHeights: [141.2, 141.2, 141.2] };
-  const h2 = { padTop: space.row2HeadingTop, railGap: space.row2RailGap, cardHeights: [H2, H1, H2], imageHeights: [145, 129, 145] };
+  const h1 = { padTop: space.row1HeadingTop, railGap: space.row1RailGap, cardHeights: [H1, H1, H1], imageHeights: [CARD_IMAGE_H, CARD_IMAGE_H, CARD_IMAGE_H], arrowTop: -1.5 };
+  const h2 = { padTop: space.row2HeadingTop, railGap: space.row2RailGap, cardHeights: [H2, H1, H2], imageHeights: [CARD_IMAGE_H, HOTEL_MID_IMAGE_H, CARD_IMAGE_H], arrowTop: 0.75 };
   const defaultFeed: Row[] = [
     { title: 'Popular homes in Lake Tahoe', items: feedHomes, ...h1 },
     {
@@ -55,16 +59,12 @@ const CardRow = ({
   <View style={styles.row}>
     <View style={[styles.headBlock, { marginTop: row.padTop }]}>
       <Text style={type.sectionTitle}>{row.title}</Text>
-      {row.subtitle ? (
-        <>
-          <Text style={[type.subtitle, styles.subtitle]}>{row.subtitle}</Text>
-          <View style={styles.rowArrow} pointerEvents="none" aria-hidden={true}>
-            <Svg width={14} height={14} viewBox="0 0 24 24">
-              <Path d="M4 12h15M13 5.5 19.5 12 13 18.5" stroke={colors.ink} strokeWidth={2.2} fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </Svg>
-          </View>
-        </>
-      ) : null}
+      {row.subtitle ? <Text style={[type.subtitle, styles.subtitle]}>{row.subtitle}</Text> : null}
+      <View style={[styles.rowArrow, { top: row.arrowTop }]} pointerEvents="none" aria-hidden={true}>
+        <Svg width={14.6} height={14.6} viewBox="0 0 24 24">
+          <Path d="M4 12h15.5M13 4.5 19.5 12 13 19.5" stroke={colors.ink} strokeWidth={1.85} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+        </Svg>
+      </View>
     </View>
     <ScrollView
       horizontal
@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
   row: {},
   headBlock: { paddingLeft: 26.2 },
   rowArrow: {
-    position: 'absolute', right: 10, top: -3,
-    width: 27, height: 27, borderRadius: 13.5, backgroundColor: colors.chipBg,
+    position: 'absolute', left: 341.3,
+    width: 28, height: 28, borderRadius: 14, backgroundColor: '#F2F2F2',
     alignItems: 'center', justifyContent: 'center',
   },
   subtitle: { width: 298.8, marginTop: 0 },

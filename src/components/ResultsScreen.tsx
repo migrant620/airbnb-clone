@@ -2,7 +2,7 @@ import * as React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Image, ScrollView, useWindowDimensions } from 'react-native';
 import Svg, { Line, Path } from 'react-native-svg';
 import { colors, type } from '../tokens';
-import { BackIcon, SlidersIcon, HeartIcon, StarIcon } from './Icons';
+import { BackIcon, SlidersIcon, PhotoHeartIcon, StarIcon } from './Icons';
 import { MapCanvas, MapPinMarker } from './MapView';
 import { span, insetOf, rightAt } from '../layout';
 import { BottomNav } from './Chrome';
@@ -228,7 +228,7 @@ const ResultsMap = ({
             style={styles.heart}
             hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <HeartIcon size={26} color="#304E76" strokeColor="#fff" filled />
+            <PhotoHeartIcon size={24} />
           </TouchableOpacity>
           <View style={styles.cardText}>
             <Text style={type.cardTitle} numberOfLines={1}>
@@ -369,7 +369,7 @@ const ResultRow = ({
           style={styles.rHeart}
           hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
         >
-          <HeartIcon size={26} color={favorite ? colors.brand : '#304E76'} strokeColor="#fff" filled />
+          <PhotoHeartIcon size={24} fill={favorite ? colors.brand : undefined} />
         </TouchableOpacity>
         <View style={styles.rDots} pointerEvents="none">
           {[0, 1, 2, 3, 4].map((i) => (
@@ -424,7 +424,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.95)', borderRadius: 11.3,
     paddingHorizontal: 10, alignItems: 'center', justifyContent: 'center',
   },
-  heart: { position: 'absolute', right: 12, top: 14, width: 32, height: 32, alignItems: 'center', justifyContent: 'center' },
+  heart: { position: 'absolute', right: 12, top: 14, width: 32, height: 32, alignItems: 'center', justifyContent: 'flex-start', paddingTop: 0.4 },
   cardText: { paddingTop: 10, paddingHorizontal: 2 },
   ratingRow: { flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 4 },
   roundBtn: {
