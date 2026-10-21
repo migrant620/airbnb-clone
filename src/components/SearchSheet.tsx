@@ -41,11 +41,18 @@ const ACTIVE_H: Record<string, number> = { where: 428.7, when: 504.7, who: 362.8
 const INACTIVE_H = 60;
 const CARD_GAP = 16;
 const FOOTER_H = 79;
+const FLEX_CHIPS = [
+  { label: 'Exact dates', width: 89.2 },
+  { label: '± 1 day', width: 75.7 },
+  { label: '± 2 days', width: 83.0 },
+  { label: '± 3 days', width: 83.0 },
+];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 export const SearchSheet = (p: Props) => {
   const { width } = useWindowDimensions();
   const wide = width >= 393;
+  const [flexIndex, setFlexIndex] = React.useState(0);
 
   const toggleRange = (d: Date) => {
     const { start, end } = p.range;
@@ -200,13 +207,21 @@ export const SearchSheet = (p: Props) => {
                 <View style={styles.calendarWrap}>
                   <Calendar year={2026} months={[8, 9]} range={p.range} onSelect={toggleRange} today={new Date(2026, 8, 19)} />
                 </View>
-                <View style={styles.flexChips} pointerEvents="none" aria-hidden={true}>
-                  <View style={[styles.chip, styles.chipExact, { width: 89.2 }]}>
-                    <Text style={styles.chipText}>Exact dates</Text>
-                  </View>
-                  <View style={[styles.chip, { width: 75.7 }]}><Text style={styles.chipText}>± 1 day</Text></View>
-                  <View style={[styles.chip, { width: 83.0 }]}><Text style={styles.chipText}>± 2 days</Text></View>
-                  <View style={[styles.chip, { width: 83.0 }]}><Text style={styles.chipText}>± 3 days</Text></View>
+                <View style={styles.flexChips} accessibilityRole="radiogroup">
+                  {FLEX_CHIPS.map((c, i) => (
+                    <TouchableOpacity
+                      key={c.label}
+                      accessibilityRole="radio"
+                      accessibilityLabel={c.label}
+                      accessibilityState={{ checked: i === flexIndex }}
+                      aria-checked={i === flexIndex}
+                      onPress={() => setFlexIndex(i)}
+                      activeOpacity={0.8}
+                      style={[styles.chip, i === flexIndex ? styles.chipExact : null, { width: c.width }]}
+                    >
+                      <Text style={styles.chipText} aria-hidden={true}>{c.label}</Text>
+                    </TouchableOpacity>
+                  ))}
                 </View>
               </View>
             ) : (
@@ -221,7 +236,7 @@ export const SearchSheet = (p: Props) => {
               <View style={[styles.stepBody, { paddingTop: padTop }]}>
                 <Text style={styles.stepTitleBold}>Who?</Text>
                 <View style={styles.counters}>
-                  <CounterRow label="Adults" caption="Ages 13 or above" value={p.guests.adults} min={0} max={16} onDec={() => setG('adults', -1)} onInc={() => setG('adults', 1)} />
+                  <CounterRow label="Adults" caption="Ages 13 or above" value={p.guestsTouched ? p.guests.adults : 0} min={0} max={16} onDec={() => setG('adults', -1)} onInc={() => setG('adults', 1)} />
                   <CounterRow label="Children" caption="Ages 2 – 12" value={p.guests.children} min={0} max={15} onDec={() => setG('children', -1)} onInc={() => setG('children', 1)} />
                   <CounterRow label="Infants" caption="Under 2" value={p.guests.infants} min={0} max={5} onDec={() => setG('infants', -1)} onInc={() => setG('infants', 1)} />
                   <CounterRow label="Pets" caption="Bringing a service animal?" captionColor={INK_BLACK} captionRow value={p.guests.pets} min={0} max={5} onDec={() => setG('pets', -1)} onInc={() => setG('pets', 1)} />

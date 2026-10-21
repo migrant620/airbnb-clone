@@ -36,7 +36,7 @@ export const feedHomes: Listing[] = [
 
 export const feedHotels: Listing[] = [
   { id: 'ht-a', title: 'Sandpiper Venice Beach Inn', location: 'Venice, California', rating: 4.6, reviews: 540, priceForNights: '$157 for 2 nights', priceNote: '2 nights', photo: img.h04 },
-  { id: 'ht-b', title: 'Canyon Rest Inn Eagle Rock', location: 'Eagle Rock, California', rating: 4.75, reviews: 412, priceForNights: '$396 for 2 nights', priceNote: '2 nights', photo: img.h05 },
+  { id: 'ht-b', title: 'Oakvale Inn Eagle Rock', location: 'Eagle Rock, California', rating: 4.75, reviews: 412, priceForNights: '$396 for 2 nights', priceNote: '2 nights', photo: img.h05 },
   { id: 'ht-c', title: 'Larkspur West Hollywood', location: 'West Hollywood, California', rating: 4.79, reviews: 623, priceForNights: '$768 for 2 nights', priceNote: '2 nights', photo: img.h06 },
 ];
 

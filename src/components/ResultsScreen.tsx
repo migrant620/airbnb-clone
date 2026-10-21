@@ -22,6 +22,7 @@ const R = {
   filters: { x: 320.9, y: 16, s: 48 },
   toggle: { x: 262, y: 16, s: 48 },
   title: { x: 145.6, y: 22.6, w: 94.2, h: 18.2 },
+  summary: { x: 72.4, y: 12.0, w: 262 - 72.4, h: 56 },
   date: { x: 126.3, y: 41.8, w: 78.2, h: 15.6 },
   guests: { x: 204.5, y: 41.8, w: 54.6, h: 15.6 },
   chipTop: 76.1,
@@ -57,8 +58,9 @@ const MapGlyph = ({ size = 22, color = '#222' }: { size?: number; color?: string
 
 export const ResultsScreen = ({
   datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart,
-  favoriteIds, onToggleFavorite, activeNav, onNav, selectedChips, onToggleChip,
+  favoriteIds, onToggleFavorite, activeNav, onNav, selectedChips, onToggleChip, onEditSearch,
 }: {
+  onEditSearch?: () => void;
   datesText: string;
   guestsText: string;
   onBack: () => void;
@@ -100,6 +102,7 @@ export const ResultsScreen = ({
         onToggle={() => setView('list')}
         selectedChips={selectedChips}
         onToggleChip={onToggleChip}
+        onEditSearch={onEditSearch}
       />
     ) : (
       <ResultsList
@@ -171,8 +174,9 @@ const TopControls = ({
 
 const ResultsMap = ({
   datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart, view, onToggle,
-  selectedChips, onToggleChip,
+  selectedChips, onToggleChip, onEditSearch,
 }: {
+  onEditSearch?: () => void;
   datesText: string;
   guestsText: string;
   onBack: () => void;
@@ -250,9 +254,17 @@ const ResultsMap = ({
 
     <TopControls onBack={onBack} onFilters={onFilters} filterCount={filterCount} view={view} onToggle={onToggle} />
 
-    <Text style={[type.resultsTitle, textAt(R.title)]} numberOfLines={1}>Homes nearby</Text>
-    <Text style={[type.resultsSub, textAt(R.date)]} numberOfLines={1}>{datesText}</Text>
-    <Text style={[type.resultsSub, textAt(R.guests)]} numberOfLines={1}>{`  ·  ${guestsText.replace(' ', ' ')}`}</Text>
+    <TouchableOpacity
+      accessibilityRole="button"
+      accessibilityLabel={`Homes nearby, ${datesText}, ${guestsText}`}
+      onPress={onEditSearch}
+      activeOpacity={0.7}
+      style={textAt(R.summary)}
+    >
+      <Text style={[type.resultsTitle, textAt(inSummary(R.title))]} numberOfLines={1}>Homes nearby</Text>
+      <Text style={[type.resultsSub, textAt(inSummary(R.date))]} numberOfLines={1}>{datesText}</Text>
+      <Text style={[type.resultsSub, textAt(inSummary(R.guests))]} numberOfLines={1}>{`  ·  ${guestsText.replace(' ', ' ')}`}</Text>
+    </TouchableOpacity>
 
     <View style={styles.chips}>
       {filterChips.map((c, i) => {
@@ -465,6 +477,8 @@ const styles = StyleSheet.create({
 
 const textAt = (b: { x: number; y: number; w: number; h: number }) =>
   ({ position: 'absolute', left: b.x, top: b.y, width: b.w, height: b.h } as const);
+const inSummary = (b: { x: number; y: number; w: number; h: number }) =>
+  ({ ...b, x: b.x - R.summary.x, y: b.y - R.summary.y });
 const chipText = (g: { x: number; w: number; tx: number; tw: number; clipped?: boolean }) =>
   ({
     position: 'absolute', left: g.tx - g.x - 1, top: R.chipTextTop, height: 15.6,

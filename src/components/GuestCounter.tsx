@@ -34,11 +34,11 @@ export const CounterRow = ({
       </View>
       <View style={styles.counter}>
         <CircleBtn enabled={decEnabled} onPress={onDec} label={label} direction="decrement" style={styles.decPos}>
-          <MinusIcon size={16} color={decEnabled ? colors.ink : colors.hairline} />
+          <MinusIcon size={16} color={decEnabled ? colors.ink : colors.stepperDisabled} />
         </CircleBtn>
         <Text style={styles.value} accessibilityLabel={`${label} ${value}`}>{value}</Text>
         <CircleBtn enabled={incEnabled} onPress={onInc} label={label} direction="increment" style={styles.incPos}>
-          <PlusIcon size={16} color={incEnabled ? colors.ink : colors.hairline} />
+          <PlusIcon size={16} color={incEnabled ? colors.ink : colors.stepperDisabled} />
         </CircleBtn>
       </View>
     </View>

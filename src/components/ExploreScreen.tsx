@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
 import { colors, type, space } from '../tokens';
 import { SearchPillWrap, CategoryTabs, BottomNav, FooterNote } from './Chrome';
@@ -18,14 +18,13 @@ type Row = {
 };
 
 const CARD_IMAGE_H = 162.2;
-const HOTEL_MID_IMAGE_H = 129;
 
 const H1 = 201.2;
 const H2 = 217.2;
 
 const rowsFor = (cat: string): Row[] => {
   const h1 = { padTop: space.row1HeadingTop, railGap: space.row1RailGap, cardHeights: [H1, H1, H1], imageHeights: [CARD_IMAGE_H, CARD_IMAGE_H, CARD_IMAGE_H], arrowTop: -1.5 };
-  const h2 = { padTop: space.row2HeadingTop, railGap: space.row2RailGap, cardHeights: [H2, H1, H2], imageHeights: [CARD_IMAGE_H, HOTEL_MID_IMAGE_H, CARD_IMAGE_H], arrowTop: 0.75 };
+  const h2 = { padTop: space.row2HeadingTop, railGap: space.row2RailGap, cardHeights: [H2, H1, H2], imageHeights: [CARD_IMAGE_H, CARD_IMAGE_H, CARD_IMAGE_H], arrowTop: 0.75 };
   const defaultFeed: Row[] = [
     { title: 'Popular homes in Lake Tahoe', items: feedHomes, ...h1 },
     {
@@ -54,9 +53,10 @@ const rowsFor = (cat: string): Row[] => {
 };
 
 const CardRow = ({
-  row, onOpenListing, onHeart,
-}: { row: Row; onOpenListing: () => void; onHeart: () => void }) => (
+  row, onOpenListing, onHeart, onOpenRow,
+}: { row: Row; onOpenListing: () => void; onHeart: () => void; onOpenRow?: () => void }) => (
   <View style={styles.row}>
+    <TouchableOpacity accessibilityRole="button" accessibilityLabel={row.title} onPress={onOpenRow} activeOpacity={0.7}>
     <View style={[styles.headBlock, { marginTop: row.padTop }]}>
       <Text style={type.sectionTitle}>{row.title}</Text>
       {row.subtitle ? <Text style={[type.subtitle, styles.subtitle]}>{row.subtitle}</Text> : null}
@@ -66,6 +66,7 @@ const CardRow = ({
         </Svg>
       </View>
     </View>
+    </TouchableOpacity>
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
@@ -88,7 +89,7 @@ const CardRow = ({
 );
 
 export const ExploreScreen = ({
-  activeCategory, onCategory, onOpenListing, onHeart, onOpenSearch, onNav, activeNav, scrollRef, onScrollY,
+  activeCategory, onCategory, onOpenListing, onHeart, onOpenSearch, onNav, activeNav, scrollRef, onScrollY, onOpenFeeNotice, onOpenRow,
 }: {
   activeCategory: string;
   onCategory: (c: string) => void;
@@ -99,6 +100,8 @@ export const ExploreScreen = ({
   activeNav: string;
   scrollRef: React.RefObject<ScrollView | null>;
   onScrollY: (y: number) => void;
+  onOpenFeeNotice?: () => void;
+  onOpenRow?: () => void;
 }) => {
   const rows = rowsFor(activeCategory);
   return (
@@ -116,12 +119,12 @@ export const ExploreScreen = ({
         scrollEventThrottle={16}
       >
         {rows.map((row, i) => (
-          <CardRow key={i} row={row} onOpenListing={onOpenListing} onHeart={onHeart} />
+          <CardRow key={i} row={row} onOpenListing={onOpenListing} onHeart={onHeart} onOpenRow={onOpenRow} />
         ))}
         <View style={{ height: space.navHeight + 60 }} />
       </ScrollView>
 
-      {activeCategory === 'All' ? <FooterNote /> : null}
+      {activeCategory === 'All' ? <FooterNote onPress={onOpenFeeNotice} /> : null}
       <BottomNav active={activeNav} onSelect={onNav} />
     </View>
   );
