@@ -31,8 +31,7 @@ original works produced for this prototype:
 - Listing photos (h01..h06.webp) and photo-tour images (t01..t06.webp):
   original images for this prototype. They are not screenshots, recolourings or derivatives of any
   Airbnb, host or third-party photograph, and carry no third-party
-  copyright. They are distributed under the prototype's noncommercial
-  study licence.
+  copyright. They are distributed under the prototype's MIT License.
 
 - Map background (Results screen): drawn from primitives (roads, a water
   body, blocks) in react-native-svg. It is a stylised illustration, not a
