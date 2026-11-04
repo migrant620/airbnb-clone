@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
+import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { colors, fonts, type, space, radii, shadow } from '../tokens';
 import { CloseIcon, SearchIcon, StarIcon } from './Icons';
 import { Calendar, DayRange } from './Calendar';
@@ -15,6 +15,8 @@ type Props = {
   category: string;
   setCategory: (c: string) => void;
   destination: string | null;
+  query: string;
+  setQuery: (q: string) => void;
   pickDestination: (d: string) => void;
   range: DayRange;
   setRange: (r: DayRange) => void;
@@ -23,6 +25,9 @@ type Props = {
   setGuests: (g: Guests) => void;
   onClose: () => void;
   onClear: () => void;
+  onResetDates: () => void;
+  flexIndex: number;
+  setFlexIndex: (i: number) => void;
   onSearch: () => void;
 };
 
@@ -49,10 +54,64 @@ const FLEX_CHIPS = [
 ];
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
+const InactiveRow = ({ title, value, valueColor }: { title: string; value: string; valueColor?: string }) => {
+  const digits = (value.match(/\d/g) || []).length;
+  return (
+    <View style={styles.inactiveRow}>
+      <Text style={styles.inactiveTitle}>{title}</Text>
+      <Text
+        style={[
+          styles.inactiveValue,
+          valueColor ? { color: valueColor } : null,
+          digits ? { letterSpacing: -0.15 - (1.6 * digits) / value.length } : null,
+        ]}
+        numberOfLines={1}
+      >
+        {value}
+      </Text>
+    </View>
+  );
+};
+
+const StepCard = ({
+  active, label, onPress, height, children,
+}: {
+  active: boolean; label: string; onPress: () => void; height: number; children?: React.ReactNode;
+}) => {
+  if (!active) {
+    return (
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        onPress={onPress}
+        style={[styles.stepCard, { height }]}
+      >
+        {children}
+      </TouchableOpacity>
+    );
+  }
+  return (
+    <View style={[styles.stepCard, styles.stepCardActive, { height }]}>
+      <View accessibilityRole="button" accessibilityLabel={label} style={styles.cardLabel} pointerEvents="none" />
+      <View style={styles.stepInner}>{children}</View>
+    </View>
+  );
+};
+
+
 export const SearchSheet = (p: Props) => {
   const { width } = useWindowDimensions();
   const wide = width >= 393;
-  const [flexIndex, setFlexIndex] = React.useState(0);
+  const { flexIndex, setFlexIndex } = p;
+  const query = p.query.trim().toLocaleLowerCase();
+  const suggested = destinations.filter((d) =>
+    `${d.name} ${d.sub}`.toLocaleLowerCase().includes(query),
+  );
+  const selectDestination = (name: string) => {
+    p.pickDestination(name);
+    p.setQuery(name);
+    p.setStep('when');
+  };
 
   const toggleRange = (d: Date) => {
     const { start, end } = p.range;
@@ -80,51 +139,9 @@ export const SearchSheet = (p: Props) => {
   const isWhen = p.step === 'when';
   const footerLeft = isWhen ? 'Reset' : 'Clear all';
   const footerRight = isWhen ? 'Next' : 'Search';
-  const canClear = p.destination !== null || p.range.start !== null || p.guestsTouched;
-
-  const InactiveRow = ({ title, value, valueColor }: { title: string; value: string; valueColor?: string }) => {
-    const digits = (value.match(/\d/g) || []).length;
-    return (
-      <View style={styles.inactiveRow}>
-        <Text style={styles.inactiveTitle}>{title}</Text>
-        <Text
-          style={[
-            styles.inactiveValue,
-            valueColor ? { color: valueColor } : null,
-            digits ? { letterSpacing: -0.15 - (1.6 * digits) / value.length } : null,
-          ]}
-          numberOfLines={1}
-        >
-          {value}
-        </Text>
-      </View>
-    );
-  };
-
-  const StepCard = ({
-    active, label, onPress, height, children,
-  }: {
-    active: boolean; label: string; onPress: () => void; height: number; children?: React.ReactNode;
-  }) => {
-    if (!active) {
-      return (
-        <TouchableOpacity
-          accessibilityRole="button"
-          accessibilityLabel={label}
-          onPress={onPress}
-          style={[styles.stepCard, { height }]}
-        >
-          {children}
-        </TouchableOpacity>
-      );
-    }
-    return (
-      <View style={[styles.stepCard, styles.stepCardActive, { height }]}>
-        <View accessibilityRole="button" accessibilityLabel={label} style={styles.cardLabel} pointerEvents="none" />
-        <View style={styles.stepInner}>{children}</View>
-      </View>
-    );
-  };
+  const canClear = isWhen
+    ? p.range.start !== null || flexIndex !== 0
+    : p.destination !== null || p.query !== '' || p.range.start !== null || p.guestsTouched || flexIndex !== 0;
 
   const padTop = p.step === 'where' ? 18.1 : 23;
 
@@ -169,12 +186,24 @@ export const SearchSheet = (p: Props) => {
                 <Text style={styles.stepTitle}>Where?</Text>
                 <View style={styles.searchInput}>
                   <SearchIcon size={18} color={INK_SECONDARY} />
-                  <Text style={styles.inputPlaceholder}>Search destinations</Text>
+                  <View style={styles.inputBody}>
+                    {p.query === '' ? <Text pointerEvents="none" style={styles.inputPlaceholder}>Search destinations</Text> : null}
+                    <TextInput
+                      accessibilityLabel="Search destinations"
+                      value={p.query}
+                      onChangeText={p.setQuery}
+                      onSubmitEditing={() => { if (suggested.length > 0) selectDestination(suggested[0].name); }}
+                      returnKeyType="search"
+                      autoCapitalize="none"
+                      autoCorrect={false}
+                      style={[styles.inputPlaceholder, styles.destinationInput]}
+                    />
+                  </View>
                 </View>
                 <Text style={styles.caption}>Suggested destinations</Text>
                 <View style={styles.destList}>
-                  {destinations.map((d) => (
-                    <TouchableOpacity key={d.name} accessibilityRole="button" accessibilityLabel={d.name} onPress={() => { p.pickDestination(d.name); p.setStep('when'); }} style={styles.destRow}>
+                  {suggested.map((d) => (
+                    <TouchableOpacity key={d.name} accessibilityRole="button" accessibilityLabel={d.name} onPress={() => selectDestination(d.name)} style={styles.destRow}>
                       <View style={[styles.destThumb, { backgroundColor: d.tile }]} pointerEvents="none">
                         <DestinationMark glyph={d.glyph} size={30} color={d.ink} />
                       </View>
@@ -184,7 +213,7 @@ export const SearchSheet = (p: Props) => {
                       </View>
                     </TouchableOpacity>
                   ))}
-                  <View style={styles.destFade} pointerEvents="none" />
+                  {query === '' ? <View style={styles.destFade} pointerEvents="none" /> : null}
                 </View>
               </View>
             ) : (
@@ -254,7 +283,7 @@ export const SearchSheet = (p: Props) => {
             accessibilityLabel={footerLeft}
             accessibilityState={{ disabled: !canClear }}
             disabled={!canClear}
-            onPress={p.onClear}
+            onPress={isWhen ? p.onResetDates : p.onClear}
             style={styles.footerLeft}
           >
             <Text style={[styles.footerText, canClear ? null : styles.footerTextDisabled]}>{footerLeft}</Text>
@@ -322,6 +351,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.fieldBorder,
     borderRadius: 12, paddingHorizontal: 23, height: 56, marginTop: 19.1, marginBottom: 0, gap: 10.1,
   },
+  inputBody: { flex: 1, height: '100%', justifyContent: 'center', alignItems: 'flex-start' },
+  destinationInput: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', padding: 0, color: INK },
   caption: {
     fontFamily: fonts.sans, fontSize: 12, lineHeight: 15.6, height: 15.6,
     fontWeight: '400' as const, letterSpacing: -0.256, color: INK, marginTop: 8, marginBottom: 4.1,

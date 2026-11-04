@@ -120,6 +120,8 @@ function Shell() {
   const [searchStep, setSearchStep] = React.useState<'where' | 'when' | 'who'>('where');
   const [searchCategory, setSearchCategory] = React.useState('Homes');
   const [destination, setDestination] = React.useState<string | null>(null);
+  const [query, setQuery] = React.useState('');
+  const [flexIndex, setFlexIndex] = React.useState(0);
   const [range, setRange] = React.useState<DayRange>({ start: null, end: null });
   const [guests, setGuests] = React.useState<Guests>({ adults: 1, children: 0, infants: 0, pets: 0 });
   const [guestsTouched, setGuestsTouched] = React.useState(false);
@@ -153,6 +155,21 @@ function Shell() {
   React.useEffect(() => {
     if (screen === 'explore') restoreFeed();
   }, [screen, restoreFeed]);
+
+  React.useEffect(() => {
+    if (!searchOpen || typeof document === 'undefined') return undefined;
+    const opener = document.activeElement;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return;
+      event.preventDefault();
+      setSearchOpen(false);
+    };
+    document.addEventListener('keydown', closeOnEscape);
+    return () => {
+      document.removeEventListener('keydown', closeOnEscape);
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
+    };
+  }, [searchOpen]);
 
   if (!fontsLoaded && !fontError && !fontGraceOver) return null;
 
@@ -188,9 +205,15 @@ function Shell() {
   };
   const onClear = () => {
     setDestination(null);
+    setQuery('');
+    setFlexIndex(0);
     setRange({ start: null, end: null });
     setGuests({ adults: 1, children: 0, infants: 0, pets: 0 });
     setGuestsTouched(false);
+  };
+  const onResetDates = () => {
+    setRange({ start: null, end: null });
+    setFlexIndex(0);
   };
   const updateGuests = (g: Guests) => {
     setGuests(g);
@@ -293,6 +316,10 @@ function Shell() {
             category={searchCategory}
             setCategory={setSearchCategory}
             destination={destination}
+            query={query}
+            setQuery={setQuery}
+            flexIndex={flexIndex}
+            setFlexIndex={setFlexIndex}
             pickDestination={setDestination}
             range={range}
             setRange={setRange}
@@ -301,6 +328,7 @@ function Shell() {
             setGuests={updateGuests}
             onClose={() => setSearchOpen(false)}
             onClear={onClear}
+            onResetDates={onResetDates}
             onSearch={onSearch}
           />
         ) : null}

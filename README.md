@@ -85,7 +85,7 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Demo build
 
-The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-10-23 (GitHub Pages commit `91aa7d2f`).
+The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-11-05 (GitHub Pages commit `647377dc`).
 
 ## Scope and limitations
 

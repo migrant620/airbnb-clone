@@ -118,6 +118,7 @@ export const ResultsScreen = ({
         onToggle={() => setView('map')}
         selectedChips={selectedChips}
         onToggleChip={onToggleChip}
+        onEditSearch={onEditSearch}
       />
     )}
     </View>
@@ -291,8 +292,9 @@ const ResultsMap = ({
 
 const ResultsList = ({
   datesText, guestsText, onBack, onFilters, filterCount, onOpenListing,
-  favoriteIds, onToggleFavorite, view, onToggle, selectedChips, onToggleChip,
+  favoriteIds, onToggleFavorite, view, onToggle, selectedChips, onToggleChip, onEditSearch,
 }: {
+  onEditSearch?: () => void;
   datesText: string;
   guestsText: string;
   onBack: () => void;
@@ -311,8 +313,14 @@ const ResultsList = ({
 
     <View style={styles.listHeader}>
       <Text style={type.resultsCount} numberOfLines={1}>Over 1,000 homes</Text>
-      <Text style={[type.resultsTitle, styles.listTitle]} numberOfLines={1}>Homes nearby</Text>
-      <Text style={[type.resultsSub, styles.listSub]} numberOfLines={1}>{`${datesText}  ·  ${guestsText}`}</Text>
+      <TouchableOpacity
+        accessibilityRole="button"
+        accessibilityLabel={`Homes nearby, ${datesText}, ${guestsText}`}
+        onPress={onEditSearch}
+      >
+        <Text style={[type.resultsTitle, styles.listTitle]} numberOfLines={1}>Homes nearby</Text>
+        <Text style={[type.resultsSub, styles.listSub]} numberOfLines={1}>{`${datesText}  ·  ${guestsText}`}</Text>
+      </TouchableOpacity>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsRow} contentContainerStyle={styles.chipsRowInner}>
         {filterChips.map((c, i) => (
           <TouchableOpacity

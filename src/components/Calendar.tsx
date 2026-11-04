@@ -74,6 +74,8 @@ export const Calendar = ({
                   key={i}
                   accessibilityRole="button"
                   accessibilityLabel={`${MONTHS[m]} ${d}`}
+                  accessibilityState={{ selected: Boolean(sel), disabled: past }}
+                  aria-pressed={Boolean(sel)}
                   onPress={() => { if (!past) onSelect(date); }}
                   disabled={past}
                   style={[
@@ -93,7 +95,7 @@ export const Calendar = ({
   </View>
 );
 
-const CELL_W = 45.57;
+const CELL_W = `${100 / 7}%` as const;
 const styles = StyleSheet.create({
   month: { marginBottom: 0 },
   titleFold: { height: 0, overflow: 'hidden' },
