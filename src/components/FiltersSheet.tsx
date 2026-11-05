@@ -90,10 +90,12 @@ const digits = (t: string) => t.replace(/[^0-9]/g, '').slice(0, 6);
 
 export const FiltersSheet = ({
   onClose,
+  onApply,
   value,
   onChange,
 }: {
   onClose: () => void;
+  onApply: () => void;
   value: FilterState;
   onChange: (next: FilterState) => void;
 }) => {
@@ -225,7 +227,7 @@ export const FiltersSheet = ({
           <TouchableOpacity
             accessibilityRole="button"
             accessibilityLabel="Show 312 homes"
-            onPress={onClose}
+            onPress={onApply}
             activeOpacity={0.9}
             style={styles.showBtn}
           >

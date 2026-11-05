@@ -1,6 +1,6 @@
 ---
 version: alpha
-name: Airbnb Android Explore and Booking Flow
+name: Airbnb Explore and Booking Flow
 description: Photo-led white cards on a plain page, a near-black ink with a single rose accent, and a search sheet that reads as one sentence in three clauses. Covers the first batch (Explore, the search sheet, results, listing detail, the photo viewer and the sign-in sheet).
 colors:
   page: "#FFFFFF"
@@ -88,7 +88,7 @@ The page, cards, sheets and floating controls are all white, so photography is t
 
 ## Typography
 
-Sans text is Plus Jakarta Sans, and numeric strings — prices, ratings, dates, counts, the photo counter — are Roboto Medium. Airbnb sets its own Cereal, a commercial face; this prototype substitutes Plus Jakarta Sans and tracks each run in so a string keeps Cereal's width at the same size. Headings and prices carry negative tracking for that reason; body sizes are kept and not reduced. Weights step between regular (supporting copy), semibold (card titles, prices, input values) and bold (section headings, page titles, the Reserve label). The navigation labels are small and quiet at 10 dp.
+Sans text uses Plus Jakarta Sans. Prices, ratings, dates and photo counters use Roboto Medium. Text styles range from regular supporting copy to semibold card titles and bold headings and actions. Headings and prices use negative letter spacing. Navigation labels are 10 dp. Bundled font licenses are included with the project.
 
 ## Layout
 
@@ -104,7 +104,15 @@ The search pill is fully rounded at 28 dp; cards and their images are 12 dp; chi
 
 ## Components
 
-Explore carries a search pill with the magnifier, a horizontally scrolling category rail where the selected chip is `ink` when unfiltered, and two card rows (a wide first row and a mixed second row) with badge, heart, title, location, price and rating. The search sheet shows Where (a recommended-destination list with a small thumbnail, name and region), When (a two-month calendar with start, end and in-range highlighting) and Who (adult, child, infant and pet counters that disable at their limits), with Clear all and Search. Results list a query summary and cards that carry a photo count, heart, title, date range, price and rating. Listing detail shows a photo with a `1 / N` counter, back, share and heart controls, the title, type and capacity line, the rating with its review count and guest-favourite flag, the host block, highlight rows with icons, and a bottom price bar with the nightly price and a Reserve button. The photo viewer is a full-bleed gallery with a counter and a category strip. The sign-in sheet is a bottom sheet with the title, a phone-or-email field, Continue, an "or" divider, Continue with Google and Continue with Apple, and a close control. The Log In tab is a stroked ring with a stroked figure inside it: a head arc left open at the bottom and two shoulder strokes running down to the ring, drawn in one weight with nothing filled. No Airbnb brand graphics, logos or avatar illustrations are used.
+**Explore and Search.** Explore has a search pill, a horizontal category rail and two rows of listing cards. Search contains Where, When and Who sections, with one expanded at a time. Destination suggestions, date ranges, flexibility choices and guest counters use local state. The results summary displays the selected destination, dates and guest count.
+
+**Results and filters.** Results offer a map with selectable fixed pins and a list of sample stays. View mode, scroll position and selected pin survive a listing-detail round trip. Filter controls edit a draft for price, type of place, rooms and amenities. Closing the sheet discards that draft; Show homes applies the selection to the local filter count and chips. The displayed stay catalogue is fixed sample data and is not a live filtered search result. List-view hearts maintain a local wishlist for this browser session.
+
+**Listing detail.** A photo header leads into the title, capacity, rating, host and highlights. The price bar stays at the bottom. Review and amenity controls open local sample views. Reserve and the detail heart lead to an appearance-only sign-in panel.
+
+**Photos.** Photo tour is a light panel with room tabs for Bedroom, Full bathroom, Backyard and Balcony. Selecting a room also updates the detail header photo, and the selection remains when Photo tour reopens. A photo opens a dark fullscreen pager containing four sample images. Arrow keys, Home and End navigate those images; resizing keeps the current photo. The existing counter displays a total of 95, but the prototype does not contain a 95-image gallery.
+
+**Sign-in panel.** A white panel contains a phone-or-email input, Continue, a separator, social sign-in controls and a close control. These are local interface elements; no account is authenticated. Search supports initial modal focus, keyboard focus wrapping and restoration on close. Escape closes the upper photo overlay before Photo tour beneath it.
 
 ## Do's and Don'ts
 
@@ -114,16 +122,12 @@ Use real text, real inputs and stateful controls with local sample data. Never s
 
 Mobile-first at 393 dp. On narrower screens the card rows keep their 166.7 dp cards and the rail scrolls; margins reduce but never collapse; the price bar and the navigation bar stay pinned so every control remains reachable. On shorter screens the sheets and the listing detail scroll rather than compressing. Wider screens centre the phone frame.
 
-## Iteration Guide
-
-Change a value in `src/tokens.ts`, rebuild, and recheck every screen that uses it; the tokens are shared, so one change moves several screens at once. Font sizes are fixed and widths are set with tracking, so prefer adjusting `letterSpacing` over `fontSize` when a run of text runs wide.
-
 ## Known Gaps
 
-- Typeface: Plus Jakarta Sans stands in for Cereal; widths are matched per string, stroke weight differs slightly.
-- Icons: every interface glyph, including the five navigation icons, is an original vector drawing, not Airbnb's own artwork.
-- Navigation glyphs: the Log In mark is drawn at 22.56 dp; the other four still sit inside a 24 dp box with a generous inset, so they read slightly low and light. This is one shared layout adjustment rather than four separate icon fixes, and it is still open.
-- Sample content: all listings, hosts and reviews are fictional and all photographs are original works made for this prototype.
-- Search-results, listing-detail, photo-viewer and sign-in states are reachable but have not yet been refined to the same standard as Explore and the search sheet.
-- The map view, filtering, wishlists, Trips, Messages and the full facilities and review lists are out of scope for this batch.
-- Sign-in, booking and payment are appearance only.
+- This release targets Web at phone width. Native Android and iOS builds, Safari and Firefox are outside its validation scope.
+- Airbnb's proprietary Cereal is not bundled; the prototype uses Plus Jakarta Sans and Roboto.
+- Listings, hosts, reviews and photographs are sample content. Results are fixed, and the map does not support panning, zooming or a live location search.
+- Filter selections and wishlists are local UI state. Trips and Messages remain signed-out placeholders.
+- The fullscreen viewer contains four sample images, despite the existing counter's total of 95.
+- Sign-in, booking and payment are appearance only. No account, booking or payment is created.
+- Selected flows are implemented; this is not complete Airbnb feature or visual coverage.

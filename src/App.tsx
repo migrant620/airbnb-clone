@@ -90,6 +90,56 @@ function WishlistsScreen({
   );
 }
 
+function useOverlayFocus(key: string, onEscape: () => void) {
+  React.useEffect(() => {
+    if (!key || typeof document === 'undefined') return undefined;
+    const opener = document.activeElement;
+    let dialog: HTMLElement | null = null;
+    const visible = (el: HTMLElement) => el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+    const controls = (root: HTMLElement) => Array.from(root.querySelectorAll<HTMLElement>(
+      'button,input,textarea,select,a[href],[tabindex]:not([tabindex="-1"])',
+    )).filter((el) => visible(el) && !el.matches(':disabled,[aria-disabled="true"]') && getComputedStyle(el).pointerEvents !== 'none');
+    const activate = () => {
+      const candidates = Array.from(document.querySelectorAll<HTMLElement>('[role="dialog"]')).filter(visible);
+      const level = (el: HTMLElement) => {
+        let top = 0;
+        for (let node: HTMLElement | null = el; node; node = node.parentElement) top = Math.max(top, Number(getComputedStyle(node).zIndex) || 0);
+        return top;
+      };
+      const next = candidates.sort((a, b) => level(a) - level(b)).at(-1) ?? null;
+      if (!next || next === dialog) return;
+      dialog = next;
+      if (!dialog.contains(document.activeElement)) controls(dialog)[0]?.focus({ preventScroll: true });
+    };
+    const observer = new MutationObserver(activate);
+    observer.observe(document.body, { childList: true, subtree: true });
+    const frame = requestAnimationFrame(activate);
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.isComposing) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+        onEscape();
+      } else if (event.key === 'Tab' && dialog) {
+        const items = controls(dialog);
+        if (!items.length) return;
+        const current = items.indexOf(document.activeElement as HTMLElement);
+        if (current < 0 || (event.shiftKey && current === 0) || (!event.shiftKey && current === items.length - 1)) {
+          event.preventDefault();
+          items[event.shiftKey ? items.length - 1 : 0].focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', keyboard, true);
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      document.removeEventListener('keydown', keyboard, true);
+      if ((!dialog || !dialog.isConnected || !visible(dialog)) && opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
+    };
+  }, [key, onEscape]);
+}
+
 function Shell() {
   const [fontsLoaded, fontError] = useFonts(fontFiles);
   const [fontGraceOver, setFontGraceOver] = React.useState(false);
@@ -133,6 +183,7 @@ function Shell() {
   const [amenitiesOpen, setAmenitiesOpen] = React.useState(false);
   const [filtersOpen, setFiltersOpen] = React.useState(false);
   const [filters, setFilters] = React.useState<FilterState>(initialFilters);
+  const [filterDraft, setFilterDraft] = React.useState<FilterState>(initialFilters);
   const filterCount = appliedCount(filters);
   const [fullPhoto, setFullPhoto] = React.useState<number | null>(null);
   const [aboutOpen, setAboutOpen] = React.useState(false);
@@ -156,20 +207,23 @@ function Shell() {
     if (screen === 'explore') restoreFeed();
   }, [screen, restoreFeed]);
 
-  React.useEffect(() => {
-    if (!searchOpen || typeof document === 'undefined') return undefined;
-    const opener = document.activeElement;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key !== 'Escape') return;
-      event.preventDefault();
-      setSearchOpen(false);
-    };
-    document.addEventListener('keydown', closeOnEscape);
-    return () => {
-      document.removeEventListener('keydown', closeOnEscape);
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus();
-    };
-  }, [searchOpen]);
+  const overlay = fullPhoto !== null ? 'fullPhoto' : amenitiesOpen ? 'amenities' : reviewsOpen ? 'reviews'
+    : hostOpen ? 'host' : priceOpen ? 'price' : aboutOpen ? 'about' : feeNoticeOpen ? 'fees'
+      : photoOpen ? 'photos' : filtersOpen ? 'filters' : loginOpen ? 'login' : searchOpen ? 'search' : '';
+  const closeOverlay = React.useCallback(() => {
+    if (fullPhoto !== null) setFullPhoto(null);
+    else if (amenitiesOpen) setAmenitiesOpen(false);
+    else if (reviewsOpen) setReviewsOpen(false);
+    else if (hostOpen) setHostOpen(false);
+    else if (priceOpen) setPriceOpen(false);
+    else if (aboutOpen) setAboutOpen(false);
+    else if (feeNoticeOpen) setFeeNoticeOpen(false);
+    else if (photoOpen) setPhotoOpen(false);
+    else if (filtersOpen) setFiltersOpen(false);
+    else if (loginOpen) setLoginOpen(false);
+    else if (searchOpen) setSearchOpen(false);
+  }, [fullPhoto, amenitiesOpen, reviewsOpen, hostOpen, priceOpen, aboutOpen, feeNoticeOpen, photoOpen, filtersOpen, loginOpen, searchOpen]);
+  useOverlayFocus(overlay, closeOverlay);
 
   if (!fontsLoaded && !fontError && !fontGraceOver) return null;
 
@@ -268,12 +322,14 @@ function Shell() {
       ) : null}
 
       <Deferred>
-        {screen === 'results' ? (
+        {screen === 'results' || (screen === 'detail' && detailReturn === 'results') ? (
+          <View style={{ position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, display: screen === 'results' ? 'flex' : 'none' }}>
           <ResultsScreen
+            destination={destination}
             datesText={datesText}
             guestsText={guestsText}
             onBack={() => { setScreen('explore'); setActiveNav('explore'); }}
-            onFilters={() => setFiltersOpen(true)}
+            onFilters={() => { setFilterDraft(filters); setFiltersOpen(true); }}
             filterCount={filterCount}
             selectedChips={filters.amenities}
             onToggleChip={(i) => setFilters((f) => toggleAmenityIn(f, i))}
@@ -285,6 +341,7 @@ function Shell() {
             onNav={handleNav}
             onEditSearch={openSearch}
           />
+          </View>
         ) : null}
       </Deferred>
 
@@ -338,6 +395,7 @@ function Shell() {
         {photoOpen ? (
           <PhotoViewer
             startIndex={photoIndex}
+            onPhotoChange={setPhotoIndex}
             onClose={() => setPhotoOpen(false)}
             onShare={shareListing}
             onHeart={() => setLoginOpen(true)}
@@ -389,7 +447,7 @@ function Shell() {
       </Deferred>
 
       {filtersOpen ? (
-        <FiltersSheet onClose={() => setFiltersOpen(false)} value={filters} onChange={setFilters} />
+        <FiltersSheet onClose={() => setFiltersOpen(false)} onApply={() => { setFilters(filterDraft); setFiltersOpen(false); }} value={filterDraft} onChange={setFilterDraft} />
       ) : null}
     </View>
   );

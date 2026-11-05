@@ -73,19 +73,21 @@ const BarButton = ({
 
 export const PhotoViewer = ({
   startIndex,
+  onPhotoChange,
   onClose,
   onShare,
   onHeart,
   onOpenPhoto,
 }: {
   startIndex: number;
+  onPhotoChange: (index: number) => void;
   onClose: () => void;
   onShare: () => void;
   onHeart: () => void;
   onOpenPhoto: (i: number) => void;
 }) => {
   const rooms = detailListing.photos;
-  const [index, setIndex] = React.useState(startIndex % rooms.length);
+  const index = ((startIndex % rooms.length) + rooms.length) % rooms.length;
   const room = rooms[index];
 
   return (
@@ -112,7 +114,7 @@ export const PhotoViewer = ({
             key={r.category}
             accessibilityRole="button"
             accessibilityLabel={r.category}
-            onPress={() => setIndex(i)}
+            onPress={() => onPhotoChange(i)}
             activeOpacity={0.9}
             style={styles.tab}
           >

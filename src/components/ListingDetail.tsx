@@ -116,6 +116,10 @@ export const ListingDetail = ({
   onOpenPrice: () => void;
 }) => {
   const { photos, host, blocks } = detailListing;
+  const heroRef = React.useRef<ScrollView>(null);
+  React.useLayoutEffect(() => {
+    heroRef.current?.scrollTo({ x: photoIndex * W, animated: false });
+  }, [photoIndex]);
   const { height: winH } = useWindowDimensions();
   const scrollH = SCROLL_H - (777 - Math.min(777, winH));
   const touchStart = React.useRef<{ x: number; y: number } | null>(null);
@@ -159,6 +163,7 @@ export const ListingDetail = ({
           } as any)}
         >
           <ScrollView
+            ref={heroRef}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}

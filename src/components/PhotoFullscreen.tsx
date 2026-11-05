@@ -9,11 +9,34 @@ export const PhotoFullscreen = ({ startIndex, onClose }: { startIndex: number; o
   const { width } = useWindowDimensions();
   const pageW = Math.min(width, 393);
   const [index, setIndex] = React.useState(startIndex);
+  const indexRef = React.useRef(startIndex);
   const ref = React.useRef<ScrollView>(null);
 
+  React.useLayoutEffect(() => {
+    const next = Math.max(0, Math.min(photos.length - 1, indexRef.current));
+    indexRef.current = next;
+    setIndex(next);
+    ref.current?.scrollTo({ x: next * pageW, animated: false });
+  }, [pageW, photos.length]);
   React.useEffect(() => {
-    ref.current?.scrollTo({ x: startIndex * pageW, animated: false });
-  }, [startIndex, pageW]);
+    if (typeof document === 'undefined') return undefined;
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.isComposing || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+      let next = indexRef.current;
+      if (event.key === 'ArrowRight') next += 1;
+      else if (event.key === 'ArrowLeft') next -= 1;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = photos.length - 1;
+      else return;
+      event.preventDefault();
+      next = Math.max(0, Math.min(photos.length - 1, next));
+      indexRef.current = next;
+      setIndex(next);
+      ref.current?.scrollTo({ x: next * pageW, animated: false });
+    };
+    document.addEventListener('keydown', keyboard);
+    return () => document.removeEventListener('keydown', keyboard);
+  }, [pageW, photos.length]);
 
   return (
     <View style={styles.root} aria-modal={true} role="dialog" accessibilityLabel="Photo viewer">
@@ -23,7 +46,8 @@ export const PhotoFullscreen = ({ startIndex, onClose }: { startIndex: number; o
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onScroll={(e) => {
-          const i = Math.round(e.nativeEvent.contentOffset.x / pageW);
+          const i = Math.max(0, Math.min(photos.length - 1, Math.round(e.nativeEvent.contentOffset.x / pageW)));
+          indexRef.current = i;
           if (i !== index) setIndex(i);
         }}
         scrollEventThrottle={32}

@@ -40,6 +40,7 @@ const R = {
 };
 
 const resultListings = [...feedHomes, ...feedHotels];
+const resultTitle = (destination: string | null) => destination && destination !== 'Nearby' ? destination : 'Homes nearby';
 
 const ListGlyph = ({ size = 22, color = '#222' }: { size?: number; color?: string }) => (
   <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -57,10 +58,11 @@ const MapGlyph = ({ size = 22, color = '#222' }: { size?: number; color?: string
 );
 
 export const ResultsScreen = ({
-  datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart,
+  destination, datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart,
   favoriteIds, onToggleFavorite, activeNav, onNav, selectedChips, onToggleChip, onEditSearch,
 }: {
   onEditSearch?: () => void;
+  destination: string | null;
   datesText: string;
   guestsText: string;
   onBack: () => void;
@@ -76,6 +78,7 @@ export const ResultsScreen = ({
   onToggleChip: (i: number) => void;
 }) => {
   const [view, setView] = React.useState<'map' | 'list'>('map');
+  const [selectedPin, setSelectedPin] = React.useState<string | null>(null);
 
   const { height } = useWindowDimensions();
   const contentH = Math.max(777, height);
@@ -91,6 +94,9 @@ export const ResultsScreen = ({
   <View style={styles.root}>
     {view === 'map' ? (
       <ResultsMap
+        destination={destination}
+        selectedPin={selectedPin}
+        setSelectedPin={setSelectedPin}
         datesText={datesText}
         guestsText={guestsText}
         onBack={onBack}
@@ -106,6 +112,7 @@ export const ResultsScreen = ({
       />
     ) : (
       <ResultsList
+        destination={destination}
         datesText={datesText}
         guestsText={guestsText}
         onBack={onBack}
@@ -174,10 +181,11 @@ const TopControls = ({
 );
 
 const ResultsMap = ({
-  datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart, view, onToggle,
-  selectedChips, onToggleChip, onEditSearch,
+  destination, datesText, guestsText, onBack, onFilters, filterCount, onOpenListing, onHeart, view, onToggle,
+  selectedChips, onToggleChip, onEditSearch, selectedPin, setSelectedPin,
 }: {
   onEditSearch?: () => void;
+  destination: string | null;
   datesText: string;
   guestsText: string;
   onBack: () => void;
@@ -187,10 +195,12 @@ const ResultsMap = ({
   onHeart: () => void;
   view: 'map' | 'list';
   onToggle: () => void;
+  selectedPin: string | null;
+  setSelectedPin: (pin: string | null) => void;
   selectedChips: number[];
   onToggleChip: (i: number) => void;
 }) => {
-  const [selectedPin, setSelectedPin] = React.useState<string | null>(null);
+
   return (
   <>
     <TouchableOpacity
@@ -257,12 +267,12 @@ const ResultsMap = ({
 
     <TouchableOpacity
       accessibilityRole="button"
-      accessibilityLabel={`Homes nearby, ${datesText}, ${guestsText}`}
+      accessibilityLabel={`${resultTitle(destination)}, ${datesText}, ${guestsText}`}
       onPress={onEditSearch}
       activeOpacity={0.7}
       style={textAt(R.summary)}
     >
-      <Text style={[type.resultsTitle, textAt(inSummary(R.title))]} numberOfLines={1}>Homes nearby</Text>
+      <Text style={[type.resultsTitle, textAt(inSummary(R.title))]} numberOfLines={1}>{resultTitle(destination)}</Text>
       <Text style={[type.resultsSub, textAt(inSummary(R.date))]} numberOfLines={1}>{datesText}</Text>
       <Text style={[type.resultsSub, textAt(inSummary(R.guests))]} numberOfLines={1}>{`  ·  ${guestsText.replace(' ', ' ')}`}</Text>
     </TouchableOpacity>
@@ -291,10 +301,11 @@ const ResultsMap = ({
 };
 
 const ResultsList = ({
-  datesText, guestsText, onBack, onFilters, filterCount, onOpenListing,
+  destination, datesText, guestsText, onBack, onFilters, filterCount, onOpenListing,
   favoriteIds, onToggleFavorite, view, onToggle, selectedChips, onToggleChip, onEditSearch,
 }: {
   onEditSearch?: () => void;
+  destination: string | null;
   datesText: string;
   guestsText: string;
   onBack: () => void;
@@ -315,10 +326,10 @@ const ResultsList = ({
       <Text style={type.resultsCount} numberOfLines={1}>Over 1,000 homes</Text>
       <TouchableOpacity
         accessibilityRole="button"
-        accessibilityLabel={`Homes nearby, ${datesText}, ${guestsText}`}
+        accessibilityLabel={`${resultTitle(destination)}, ${datesText}, ${guestsText}`}
         onPress={onEditSearch}
       >
-        <Text style={[type.resultsTitle, styles.listTitle]} numberOfLines={1}>Homes nearby</Text>
+        <Text style={[type.resultsTitle, styles.listTitle]} numberOfLines={1}>{resultTitle(destination)}</Text>
         <Text style={[type.resultsSub, styles.listSub]} numberOfLines={1}>{`${datesText}  ·  ${guestsText}`}</Text>
       </TouchableOpacity>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.chipsRow} contentContainerStyle={styles.chipsRowInner}>
@@ -448,6 +459,7 @@ const styles = StyleSheet.create({
   cardText: { paddingTop: 10, paddingHorizontal: 2 },
   ratingRow: { flexDirection: 'row', alignItems: 'center', marginTop: 2, gap: 4 },
   roundBtn: {
+    zIndex: 1,
     position: 'absolute', alignItems: 'center', justifyContent: 'center',
     borderRadius: 24, backgroundColor: colors.white,
   },

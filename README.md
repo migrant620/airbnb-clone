@@ -52,6 +52,14 @@ The full token set — colours, type scale, spacing, radii, elevation and compon
 | Photo viewer | Open the gallery, swipe between photos and follow the counter. |
 | Log in sheet | Tap the heart to open the sign-in sheet, then close it. Sign-in is not functional. |
 
+### In the details
+
+The result summary follows your selected destination. Map/list mode, scroll position and selected pins remain when you return from a listing. Filters have separate draft and applied selections.
+
+Photo tour remembers the selected room and updates the detail photo. The fullscreen viewer contains four sample images; Arrow keys, Home and End navigate them, and the current image remains after resizing. The existing counter total of 95 does not represent a complete gallery in this prototype.
+
+Escape closes the upper photo overlay first. The search sheet supports keyboard focus wrapping and returns focus to its opener when closed.
+
 ### A first walkthrough
 
 1. On **Explore**, tap the search pill to open the search sheet.
@@ -85,7 +93,7 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Demo build
 
-The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-11-05 (GitHub Pages commit `647377dc`).
+The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-11-05 (GitHub Pages commit `28a87cb1`).
 
 ## Scope and limitations
 
@@ -94,7 +102,7 @@ The published demo at <https://migrant620.github.io/airbnb/> is built from this 
 - **Typeface.** Airbnb uses Cereal, a proprietary typeface. This prototype uses the open Plus Jakarta Sans, tracked in so the key strings occupy the same width. Stroke weight differs slightly. Numerals use Roboto.
 - **Icons.** The navigation and interface glyphs are original vector drawings, not Airbnb's own artwork.
 - **Sign-in is appearance only.** The sheet reproduces what a signed-out visitor sees and can be closed; there is no account, no booking and no payment anywhere in the prototype.
-- **Not yet built.** Filtering, interactive map panning and zooming (the results map is a stylised original illustration with fixed pins), wishlists, Trips, Messages and the full facilities and review lists are out of scope for this batch.
+- **Local sample flows.** Filter controls, wishlist selections, reviews and amenity views use local sample data. Closing the filter sheet discards its draft; Show homes applies its local selections. The stay catalogue is fixed, the map has fixed pins without panning or zooming, and Trips and Messages remain signed-out placeholders. There is no account-backed search or booking service.
 - **Mobile layout on the web.** The interface is designed for a phone-width column; on wider screens it stays a centred column.
 - **Validation scope.** Tested in Chromium at phone width and at three smaller widths. This does not establish feature completeness or Safari, Firefox, native Android or native iOS acceptance.
 
@@ -112,4 +120,4 @@ Product names and trademarks belong to their owners; the license covers this pro
 
 This is an independent prototype by M620, not an official Airbnb product and not affiliated with or endorsed by Airbnb. Third-party names identify the interface being demonstrated.
 
-Bundled fonts retain their own licenses: Roboto under the Apache License 2.0 and Plus Jakarta Sans under the SIL Open Font License 1.1, with the full texts in `assets/fonts/`. See the [third-party notices](public/third-party-notices.txt); the web build also serves this file at `/third-party-notices.txt`.
+Bundled fonts retain their own licenses: Roboto under the Apache License 2.0 and Plus Jakarta Sans under the SIL Open Font License 1.1, with the full texts in `assets/fonts/`. See the [third-party notices](public/third-party-notices.txt); the demo also serves [these notices](https://migrant620.github.io/airbnb/third-party-notices.txt).
