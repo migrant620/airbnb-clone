@@ -4,20 +4,23 @@ import { colors, type } from '../tokens';
 import { CloseIcon } from './Icons';
 import { detailListing, PHOTO_TOTAL } from '../data';
 
-export const PhotoFullscreen = ({ startIndex, onClose }: { startIndex: number; onClose: () => void }) => {
+export const PhotoFullscreen = ({ startIndex, onClose, onPhotoChange }: { startIndex: number; onClose: () => void; onPhotoChange: (index: number) => void }) => {
   const photos = detailListing.photos;
   const { width } = useWindowDimensions();
   const pageW = Math.min(width, 393);
   const [index, setIndex] = React.useState(startIndex);
   const indexRef = React.useRef(startIndex);
   const ref = React.useRef<ScrollView>(null);
+  const live = React.useRef(true);
+  React.useLayoutEffect(() => { live.current = true; return () => { live.current = false; }; }, []);
 
   React.useLayoutEffect(() => {
     const next = Math.max(0, Math.min(photos.length - 1, indexRef.current));
     indexRef.current = next;
     setIndex(next);
+    onPhotoChange(next);
     ref.current?.scrollTo({ x: next * pageW, animated: false });
-  }, [pageW, photos.length]);
+  }, [pageW, photos.length, onPhotoChange]);
   React.useEffect(() => {
     if (typeof document === 'undefined') return undefined;
     const keyboard = (event: KeyboardEvent) => {
@@ -32,11 +35,12 @@ export const PhotoFullscreen = ({ startIndex, onClose }: { startIndex: number; o
       next = Math.max(0, Math.min(photos.length - 1, next));
       indexRef.current = next;
       setIndex(next);
+      onPhotoChange(next);
       ref.current?.scrollTo({ x: next * pageW, animated: false });
     };
     document.addEventListener('keydown', keyboard);
     return () => document.removeEventListener('keydown', keyboard);
-  }, [pageW, photos.length]);
+  }, [pageW, photos.length, onPhotoChange]);
 
   return (
     <View style={styles.root} aria-modal={true} role="dialog" accessibilityLabel="Photo viewer">
@@ -46,9 +50,12 @@ export const PhotoFullscreen = ({ startIndex, onClose }: { startIndex: number; o
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onScroll={(e) => {
-          const i = Math.max(0, Math.min(photos.length - 1, Math.round(e.nativeEvent.contentOffset.x / pageW)));
+          if (!live.current || !ref.current) return;
+          const node = ref.current.getScrollableNode?.();
+          const x = typeof node?.scrollLeft === 'number' ? node.scrollLeft : e.nativeEvent.contentOffset.x;
+          const i = Math.max(0, Math.min(photos.length - 1, Math.round(x / pageW)));
           indexRef.current = i;
-          if (i !== index) setIndex(i);
+          if (i !== index) { setIndex(i); onPhotoChange(i); }
         }}
         scrollEventThrottle={32}
         style={styles.pager}

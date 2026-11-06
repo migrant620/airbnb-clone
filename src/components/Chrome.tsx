@@ -175,3 +175,12 @@ const styles = StyleSheet.create({
   },
 
 });
+
+export function choiceKeys(event: React.KeyboardEvent, index: number, count: number, choose: (index: number) => void, nodes: Map<number, unknown>) {
+  if (event.isDefaultPrevented() || event.nativeEvent.isComposing || event.ctrlKey || event.metaKey || event.altKey) return;
+  const next = event.key === 'ArrowRight' ? (index + 1) % count : event.key === 'ArrowLeft' ? (index + count - 1) % count : event.key === 'Home' ? 0 : event.key === 'End' ? count - 1 : -1;
+  if (next < 0) return;
+  event.preventDefault(); choose(next);
+  const target = nodes.get(next) as HTMLElement | undefined;
+  target?.focus(); target?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+}

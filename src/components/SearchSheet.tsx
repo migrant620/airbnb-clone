@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
+import { Platform, StyleSheet, View, Text, TextInput, TouchableOpacity, ScrollView, useWindowDimensions } from 'react-native';
 import { colors, fonts, type, space, radii, shadow } from '../tokens';
 import { CloseIcon, SearchIcon, StarIcon } from './Icons';
 import { Calendar, DayRange } from './Calendar';
 import { CounterRow } from './GuestCounter';
 import { DestinationMark } from './DestinationMarks';
 import { destinations } from '../data';
+import { choiceKeys } from './Chrome';
 
 export type Guests = { adults: number; children: number; infants: number; pets: number };
 
@@ -100,6 +101,8 @@ const StepCard = ({
 
 
 export const SearchSheet = (p: Props) => {
+  const categoryNodes = React.useRef(new Map<number, unknown>());
+  const flexibilityNodes = React.useRef(new Map<number, unknown>());
   const { width } = useWindowDimensions();
   const wide = width >= 393;
   const { flexIndex, setFlexIndex } = p;
@@ -158,12 +161,15 @@ export const SearchSheet = (p: Props) => {
             </View>
           </TouchableOpacity>
           <View style={[styles.seg, { width: Math.min(248.2, width - 72.4 - 72) }]}>
-            {SEG.map((s) => {
+            {SEG.map((s, i) => {
               const sel = s === p.category;
               const icon = s === 'Homes' ? '🏠' : s === 'Experiences' ? '🎈' : '🛎';
               return (
                 <TouchableOpacity
                   key={s}
+                  ref={node => { if (node) categoryNodes.current.set(i, node); else categoryNodes.current.delete(i); }}
+                  aria-selected={sel}
+                  {...(Platform.OS === 'web' ? { tabIndex: sel ? 0 : -1, onKeyDownCapture: (event: React.KeyboardEvent) => choiceKeys(event, i, SEG.length, next => p.setCategory(SEG[next]), categoryNodes.current) } : {})}
                   accessibilityRole="tab"
                   accessibilityLabel={s}
                   accessibilityState={{ selected: sel }}
@@ -240,6 +246,8 @@ export const SearchSheet = (p: Props) => {
                   {FLEX_CHIPS.map((c, i) => (
                     <TouchableOpacity
                       key={c.label}
+                      ref={node => { if (node) flexibilityNodes.current.set(i, node); else flexibilityNodes.current.delete(i); }}
+                      {...(Platform.OS === 'web' ? { tabIndex: i === flexIndex ? 0 : -1, onKeyDownCapture: (event: React.KeyboardEvent) => choiceKeys(event, i, FLEX_CHIPS.length, setFlexIndex, flexibilityNodes.current) } : {})}
                       accessibilityRole="radio"
                       accessibilityLabel={c.label}
                       accessibilityState={{ checked: i === flexIndex }}

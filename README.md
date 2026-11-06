@@ -69,7 +69,9 @@ Escape closes the upper photo overlay first. The search sheet supports keyboard 
 5. Scroll the results, open a listing, and swipe through its photos.
 6. Go back to **Explore** and tap a heart to see the sign-in sheet.
 
-Sample content lives only in the page; reloading starts a fresh session.
+Photo selection stays in sync across the fullscreen pager, Photo tour and listing header. Reviews and amenities remember separate scroll positions. Closing sign-in returns to the panel that opened it and retains the contact entry. Search categories, date flexibility and type-of-place choices support arrow keys, Home and End.
+
+Sample content and these choices live only in the page; reloading starts a fresh session.
 
 ## Run locally
 
@@ -93,7 +95,7 @@ The static output is written to `dist/`. Serve that directory over HTTP or HTTPS
 
 ## Demo build
 
-The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-11-05 (GitHub Pages commit `28a87cb1`).
+The published demo at <https://migrant620.github.io/airbnb/> is built from this repository. It was last rebuilt and redeployed on 2026-11-06 (GitHub Pages commit `615b9cc9`).
 
 ## Scope and limitations
 
@@ -120,4 +122,4 @@ Product names and trademarks belong to their owners; the license covers this pro
 
 This is an independent prototype by M620, not an official Airbnb product and not affiliated with or endorsed by Airbnb. Third-party names identify the interface being demonstrated.
 
-Bundled fonts retain their own licenses: Roboto under the Apache License 2.0 and Plus Jakarta Sans under the SIL Open Font License 1.1, with the full texts in `assets/fonts/`. See the [third-party notices](public/third-party-notices.txt); the demo also serves [these notices](https://migrant620.github.io/airbnb/third-party-notices.txt).
+Bundled fonts retain their own licenses: Roboto and Plus Jakarta Sans under the SIL Open Font License 1.1, with the full texts in `assets/fonts/`. See the [third-party notices](public/third-party-notices.txt); the demo also serves [these notices](https://migrant620.github.io/airbnb/third-party-notices.txt).

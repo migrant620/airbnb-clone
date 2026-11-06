@@ -177,6 +177,9 @@ function Shell() {
   const [guestsTouched, setGuestsTouched] = React.useState(false);
 
   const [loginOpen, setLoginOpen] = React.useState(false);
+  const [loginContact, setLoginContact] = React.useState('');
+  const [reviewsOffset, setReviewsOffset] = React.useState(0);
+  const [amenitiesOffset, setAmenitiesOffset] = React.useState(0);
   const [photoOpen, setPhotoOpen] = React.useState(false);
   const [photoIndex, setPhotoIndex] = React.useState(0);
   const [reviewsOpen, setReviewsOpen] = React.useState(false);
@@ -207,11 +210,12 @@ function Shell() {
     if (screen === 'explore') restoreFeed();
   }, [screen, restoreFeed]);
 
-  const overlay = fullPhoto !== null ? 'fullPhoto' : amenitiesOpen ? 'amenities' : reviewsOpen ? 'reviews'
+  const overlay = loginOpen ? 'login' : fullPhoto !== null ? 'fullPhoto' : amenitiesOpen ? 'amenities' : reviewsOpen ? 'reviews'
     : hostOpen ? 'host' : priceOpen ? 'price' : aboutOpen ? 'about' : feeNoticeOpen ? 'fees'
-      : photoOpen ? 'photos' : filtersOpen ? 'filters' : loginOpen ? 'login' : searchOpen ? 'search' : '';
+      : photoOpen ? 'photos' : filtersOpen ? 'filters' : searchOpen ? 'search' : '';
   const closeOverlay = React.useCallback(() => {
-    if (fullPhoto !== null) setFullPhoto(null);
+    if (loginOpen) setLoginOpen(false);
+    else if (fullPhoto !== null) setFullPhoto(null);
     else if (amenitiesOpen) setAmenitiesOpen(false);
     else if (reviewsOpen) setReviewsOpen(false);
     else if (hostOpen) setHostOpen(false);
@@ -220,7 +224,6 @@ function Shell() {
     else if (feeNoticeOpen) setFeeNoticeOpen(false);
     else if (photoOpen) setPhotoOpen(false);
     else if (filtersOpen) setFiltersOpen(false);
-    else if (loginOpen) setLoginOpen(false);
     else if (searchOpen) setSearchOpen(false);
   }, [fullPhoto, amenitiesOpen, reviewsOpen, hostOpen, priceOpen, aboutOpen, feeNoticeOpen, photoOpen, filtersOpen, loginOpen, searchOpen]);
   useOverlayFocus(overlay, closeOverlay);
@@ -405,7 +408,7 @@ function Shell() {
       </Deferred>
 
       <Deferred>
-        {fullPhoto !== null ? <PhotoFullscreen startIndex={fullPhoto} onClose={() => setFullPhoto(null)} /> : null}
+        {fullPhoto !== null ? <PhotoFullscreen onPhotoChange={setPhotoIndex} startIndex={fullPhoto} onClose={() => setFullPhoto(null)} /> : null}
       </Deferred>
 
       <Deferred>
@@ -416,7 +419,7 @@ function Shell() {
         {priceOpen ? (
           <PriceDetailsScreen
             onClose={() => setPriceOpen(false)}
-            onReserve={() => { setPriceOpen(false); setLoginOpen(true); }}
+            onReserve={() => setLoginOpen(true)}
           />
         ) : null}
       </Deferred>
@@ -425,7 +428,7 @@ function Shell() {
         {hostOpen ? (
           <HostScreen
             onClose={() => setHostOpen(false)}
-            onMessage={() => { setHostOpen(false); setLoginOpen(true); }}
+            onMessage={() => setLoginOpen(true)}
           />
         ) : null}
       </Deferred>
@@ -435,15 +438,15 @@ function Shell() {
       </Deferred>
 
       <Deferred>
-        {loginOpen ? <LoginSheet onClose={() => setLoginOpen(false)} /> : null}
+        {loginOpen ? <LoginSheet contact={loginContact} onContactChange={setLoginContact} onClose={() => setLoginOpen(false)} /> : null}
       </Deferred>
 
       <Deferred>
-        {reviewsOpen ? <ReviewsScreen onClose={() => setReviewsOpen(false)} /> : null}
+        {reviewsOpen ? <ReviewsScreen scrollOffset={reviewsOffset} onScrollOffset={setReviewsOffset} onClose={() => setReviewsOpen(false)} /> : null}
       </Deferred>
 
       <Deferred>
-        {amenitiesOpen ? <AmenitiesScreen onClose={() => setAmenitiesOpen(false)} /> : null}
+        {amenitiesOpen ? <AmenitiesScreen scrollOffset={amenitiesOffset} onScrollOffset={setAmenitiesOffset} onClose={() => setAmenitiesOpen(false)} /> : null}
       </Deferred>
 
       {filtersOpen ? (

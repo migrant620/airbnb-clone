@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Platform,
   StyleSheet,
   View,
   Text,
@@ -12,6 +13,7 @@ import {
 import { colors, type, space, radii, shadow } from '../tokens';
 import { CloseIcon, PlusIcon, MinusIcon } from './Icons';
 import { filterChips } from '../data';
+import { choiceKeys } from './Chrome';
 
 
 type PlaceType = 'Any' | 'Private room' | 'Entire home';
@@ -99,6 +101,7 @@ export const FiltersSheet = ({
   value: FilterState;
   onChange: (next: FilterState) => void;
 }) => {
+  const choices = React.useRef(new Map<number, unknown>());
   const { placeType, rooms } = value;
   const setPlaceType = (t: PlaceType) => onChange({ ...value, placeType: t });
   const setRooms = (fn: (r: FilterState['rooms']) => FilterState['rooms']) => onChange({ ...value, rooms: fn(rooms) });
@@ -156,11 +159,14 @@ export const FiltersSheet = ({
 
           <Text style={[type.sheetSectionTitle, styles.sectionTitle]}>Type of place</Text>
           <View style={styles.segment}>
-            {PLACE_TYPES.map((t) => {
+            {PLACE_TYPES.map((t, i) => {
               const sel = t === placeType;
               return (
                 <TouchableOpacity
                   key={t}
+                  ref={node => { if (node) choices.current.set(i, node); else choices.current.delete(i); }}
+                  aria-pressed={sel}
+                  {...(Platform.OS === 'web' ? { tabIndex: sel ? 0 : -1, onKeyDownCapture: (event: React.KeyboardEvent) => choiceKeys(event, i, PLACE_TYPES.length, next => setPlaceType(PLACE_TYPES[next]), choices.current) } : {})}
                   accessibilityRole="button"
                   accessibilityLabel={t}
                   accessibilityState={{ selected: sel }}

@@ -116,11 +116,11 @@ export const ListingDetail = ({
   onOpenPrice: () => void;
 }) => {
   const { photos, host, blocks } = detailListing;
+  const { height: winH, width: winW } = useWindowDimensions();
   const heroRef = React.useRef<ScrollView>(null);
   React.useLayoutEffect(() => {
-    heroRef.current?.scrollTo({ x: photoIndex * W, animated: false });
-  }, [photoIndex]);
-  const { height: winH } = useWindowDimensions();
+    heroRef.current?.scrollTo({ x: photoIndex * Math.min(393, winW), animated: false });
+  }, [photoIndex, winW]);
   const scrollH = SCROLL_H - (777 - Math.min(777, winH));
   const touchStart = React.useRef<{ x: number; y: number } | null>(null);
   const pressStart = (x: number, y: number) => { touchStart.current = { x, y }; };
@@ -169,8 +169,11 @@ export const ListingDetail = ({
             showsHorizontalScrollIndicator={false}
             bounces={false}
             onScroll={(e) => {
+              if (!heroRef.current) return;
+              const node = heroRef.current.getScrollableNode?.();
+              const x = typeof node?.scrollLeft === 'number' ? node.scrollLeft : e.nativeEvent.contentOffset.x;
               const w = e.nativeEvent.layoutMeasurement.width;
-              const i = Math.round(e.nativeEvent.contentOffset.x / w);
+              const i = Math.max(0, Math.min(photos.length - 1, Math.round(x / w)));
               if (i !== photoIndex) onPhotoChange(i);
             }}
             scrollEventThrottle={32}
@@ -178,7 +181,7 @@ export const ListingDetail = ({
             contentContainerStyle={styles.heroPagerContent}
           >
             {photos.map((ph, i) => (
-              <Image key={i} source={ph.file} style={[styles.heroImg, { width: W }]} resizeMode="cover" />
+              <Image key={i} source={ph.file} style={[styles.heroImg, { width: Math.min(393, winW) }]} resizeMode="cover" />
             ))}
           </ScrollView>
         </View>

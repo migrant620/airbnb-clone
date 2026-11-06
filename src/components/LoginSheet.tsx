@@ -27,8 +27,7 @@ const L = {
 const COL = insetOf(L.title.x, L.title.w);
 const OR_RIGHT = insetOf(L.orLineR.x, L.orLineR.w);
 
-export const LoginSheet = ({ onClose }: { onClose: () => void }) => {
-  const [contact, setContact] = React.useState('');
+export const LoginSheet = ({ onClose, contact, onContactChange }: { onClose: () => void; contact: string; onContactChange: (value: string) => void }) => {
   return (
   <TouchableWithoutFeedback onPress={onClose}>
     <View style={styles.inner} aria-modal={true} role="dialog">
@@ -68,7 +67,7 @@ export const LoginSheet = ({ onClose }: { onClose: () => void }) => {
       <TextInput
         accessibilityLabel="Phone number or email"
         value={contact}
-        onChangeText={setContact}
+        onChangeText={onContactChange}
         autoComplete="email"
         autoCapitalize="none"
         keyboardType="email-address"
@@ -120,7 +119,7 @@ export const LoginSheet = ({ onClose }: { onClose: () => void }) => {
 const styles = StyleSheet.create({
   inner: {
     position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: colors.white, zIndex: 55,
+    backgroundColor: colors.white, zIndex: 80,
   },
   centred: { textAlign: 'center' },
   fill: { width: '100%', height: '100%' },

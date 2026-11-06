@@ -13,7 +13,25 @@ const Stars = ({ size = 14, gap = 4 }: { size?: number; gap?: number }) => (
   </View>
 );
 
-export const ReviewsScreen = ({ onClose }: { onClose: () => void }) => {
+export const ReviewsScreen = ({ onClose, scrollOffset = 0, onScrollOffset }: { onClose: () => void; scrollOffset?: number; onScrollOffset?: (offset: number) => void }) => {
+  const scroll = React.useRef<ScrollView>(null);
+  const live = React.useRef(true);
+  const initialOffset = React.useRef(scrollOffset);
+  const restoring = React.useRef(true);
+  const restore = () => {
+    if (!restoring.current || !scroll.current) return;
+    scroll.current.scrollTo({ y: initialOffset.current, animated: false });
+    const node = scroll.current.getScrollableNode?.();
+    if (typeof node?.scrollTop === 'number' && Math.abs(node.scrollTop - initialOffset.current) < 1) restoring.current = false;
+  };
+  React.useLayoutEffect(() => {
+    live.current = true;
+    const node = scroll.current?.getScrollableNode?.();
+    return () => {
+      live.current = false;
+      if (typeof node?.scrollTop === 'number') onScrollOffset?.(node.scrollTop);
+    };
+  }, [onScrollOffset]);
   const { reviews, rating } = detailListing;
 
   return (
@@ -33,6 +51,17 @@ export const ReviewsScreen = ({ onClose }: { onClose: () => void }) => {
       </View>
 
       <ScrollView
+        ref={scroll}
+        onLayout={restore}
+        onContentSizeChange={restore}
+        onScroll={event => {
+          if (!live.current || !scroll.current) return;
+          const node = scroll.current?.getScrollableNode?.();
+          const y = typeof node?.scrollTop === 'number' ? node.scrollTop : event.nativeEvent.contentOffset.y;
+          if (restoring.current && Math.abs(y - initialOffset.current) > 1) return;
+          restoring.current = false; onScrollOffset?.(y);
+        }}
+        scrollEventThrottle={100}
         style={styles.scroll}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
